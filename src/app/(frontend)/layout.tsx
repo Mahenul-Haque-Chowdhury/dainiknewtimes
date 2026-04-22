@@ -54,17 +54,17 @@ export default async function FrontendLayout({
         <Footer />
         <BottomTicker headlines={headlines} />
         <ScrollToTop />
-      </body>
 
-      {adsenseClient && (
-        <Script
-          id="adsense-loader"
-          async
-          strategy="afterInteractive"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
-          crossOrigin="anonymous"
-        />
-      )}
+        {adsenseClient && (
+          <Script
+            id="adsense-loader"
+            async
+            strategy="afterInteractive"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+            crossOrigin="anonymous"
+          />
+        )}
+      </body>
     </html>
   );
 }
