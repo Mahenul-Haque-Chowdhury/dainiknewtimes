@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "thedailynewtimes.com",
+        hostname: "dainiknewtimes.com",
       },
     ],
   },

@@ -52,12 +52,12 @@ async function seed() {
       collection: "users",
       data: {
         name: "Admin",
-        email: "admin@thedailynewtimes.com",
+        email: "admin@dainiknewtimes.com",
         password: bootstrapAdminPassword,
         role: "admin",
       },
     });
-    console.log("  ✓ Created admin user: admin@thedailynewtimes.com");
+    console.log("  ✓ Created admin user: admin@dainiknewtimes.com");
   }
 
   // Set up breaking news

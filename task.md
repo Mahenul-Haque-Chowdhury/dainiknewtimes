@@ -1,7 +1,7 @@
 # Production Task Backlog
 
 Last updated: 2026-04-19
-Project: thedailynewtimes
+Project: dainiknewtimes
 
 ## Purpose
 This file is the single backlog of all work needed to take the project to safe, repeatable production.

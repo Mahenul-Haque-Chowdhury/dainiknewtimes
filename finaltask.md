@@ -1,7 +1,7 @@
 # Final Production Checklist (Remaining + Important)
 
 Last updated: 2026-04-19
-Project: thedailynewtimes
+Project: dainiknewtimes
 
 ## Current Status Snapshot
 - Build and quality checks are passing locally:

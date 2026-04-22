@@ -10,7 +10,7 @@ export default async function Footer() {
   const publisherInfo = settings?.editorInfo?.publisherInfo || "সম্পাদক কর্তৃক প্রকাশিত।";
 
   const phone = settings?.contactInfo?.phone || "+8801XXXXXXXXX";
-  const email = settings?.contactInfo?.email || "info@thedailynewtimes.com";
+  const email = settings?.contactInfo?.email || "info@dainiknewtimes.com";
   const address = settings?.contactInfo?.address || "Dhaka, Bangladesh";
 
   const footerText =

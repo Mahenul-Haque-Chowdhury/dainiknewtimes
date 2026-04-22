@@ -5,7 +5,7 @@ export async function GET() {
     {
       status: "ok",
       timestamp: new Date().toISOString(),
-      service: "thedailynewtimes",
+      service: "dainiknewtimes",
       uptimeSeconds: Math.round(process.uptime()),
     },
     {
