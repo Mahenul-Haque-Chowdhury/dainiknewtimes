@@ -1,0 +1,52 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deployment target
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+          DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        run: npm run build
+
+      - name: Deploy (placeholder)
+        run: |
+          echo "Implement platform-specific deployment command here."
+          echo "Target environment: ${{ inputs.environment }}"
+
+      - name: Post-deploy smoke reminder
+        run: |
+          echo "Run smoke tests after deployment:"
+          echo "- /"
+          echo "- /post/<slug>"
+          echo "- /epaper"
+          echo "- /api/health"
+          echo "- /api/ready"

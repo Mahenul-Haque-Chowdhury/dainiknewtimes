@@ -1,0 +1,51 @@
+name: Release Candidate E2E
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  e2e-smoke:
+    runs-on: ubuntu-latest
+    env:
+      PAYLOAD_SECRET: rc-secret
+      DATABASE_URI: postgres://postgres:postgres@localhost:5432/thedailynewtimes
+      NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3000
+      POSTGRES_DB: thedailynewtimes
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: thedailynewtimes
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d thedailynewtimes"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E smoke tests
+        run: npm run test:e2e

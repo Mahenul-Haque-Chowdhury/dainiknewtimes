@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-red: #d92028;
+  --color-primary-blue: #0d6efd;
+  --color-dark-blue: #0947a3;
+  --color-navy: #01284E;
+  --color-section-blue: #0947a3;
+  --color-light-gray: #f5f5f5;
+  --color-border-gray: #e5e5e5;
+  --color-text-dark: #1a1a1a;
+  --color-text-muted: #666666;
+
+  --font-bengali: "Noto Sans Bengali", "SolaimanLipi", sans-serif;
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-bengali);
+  color: var(--color-text-dark);
+  background-color: #ffffff;
+}
+
+a[href],
+button:not(:disabled),
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+summary,
+select,
+[role="button"] {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled {
+  cursor: not-allowed;
+}
+
+/* Bengali typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+p {
+  line-height: 1.8;
+}
+
+/* Breaking news ticker animation */
+@keyframes ticker-scroll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.ticker-animate {
+  animation: ticker-scroll 30s linear infinite;
+}
+
+.ticker-animate:hover {
+  animation-play-state: paused;
+}
+
+/* Sticky navbar */
+.navbar-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* News card hover effects */
+.news-card-hover:hover img {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.news-card-hover img {
+  transition: transform 0.3s ease;
+}
+
+/* Scrollbar for ticker */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Red card border style (like reference site) */
+.card-red-border {
+  border: 2px solid var(--color-primary-red);
+  border-radius: 4px;
+}
+
+/* Section header style */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-header::after {
+  content: "";
+  flex: 1;
+  height: 3px;
+  background: linear-gradient(to right, var(--color-primary-red), var(--color-primary-blue), var(--color-primary-red));
+}
+
+/* Live indicator pulse */
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.live-pulse {
+  animation: pulse-live 1.5s ease-in-out infinite;
+}
+
+/* Article body content typography */
+.article-content h1 { font-size: 1.75rem; font-weight: 700; margin: 1.5rem 0 0.75rem; }
+.article-content h2 { font-size: 1.5rem; font-weight: 700; margin: 1.25rem 0 0.5rem; }
+.article-content h3 { font-size: 1.25rem; font-weight: 600; margin: 1rem 0 0.5rem; }
+.article-content p { margin-bottom: 1rem; line-height: 2; }
+.article-content ul, .article-content ol { margin: 0.75rem 0; padding-left: 1.5rem; }
+.article-content li { margin-bottom: 0.25rem; line-height: 1.8; }
+.article-content blockquote {
+  border-left: 4px solid var(--color-primary-red);
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  background: var(--color-light-gray);
+  font-style: italic;
+}
+.article-content a { color: var(--color-primary-blue); text-decoration: underline; }
+.article-content img { max-width: 100%; height: auto; border-radius: 4px; margin: 1rem 0; }
