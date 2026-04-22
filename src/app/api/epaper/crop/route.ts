@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import sharp from "sharp";
 
 import {
@@ -26,6 +28,24 @@ const globalRateLimit = globalThis as typeof globalThis & {
 
 const rateLimitBuckets = globalRateLimit.__epaperCropRateLimit ?? new Map<string, RateLimitBucket>();
 globalRateLimit.__epaperCropRateLimit = rateLimitBuckets;
+
+function getLocalMediaFilePath(sourceUrl: URL): string | null {
+  if (sourceUrl.pathname.startsWith("/api/media/file/")) {
+    const encodedFilename = sourceUrl.pathname.slice("/api/media/file/".length);
+    if (!encodedFilename) return null;
+
+    return path.join(process.cwd(), "media", decodeURIComponent(encodedFilename));
+  }
+
+  if (sourceUrl.pathname.startsWith("/media/")) {
+    const encodedFilename = sourceUrl.pathname.slice("/media/".length);
+    if (!encodedFilename) return null;
+
+    return path.join(process.cwd(), "media", decodeURIComponent(encodedFilename));
+  }
+
+  return null;
+}
 
 function getClientIp(request: NextRequest): string {
   const forwardedFor = request.headers.get("x-forwarded-for");
@@ -125,33 +145,40 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    const localMediaFilePath = getLocalMediaFilePath(sourceUrl);
 
-    const imageRes = await fetch(sourceUrl.toString(), {
-      signal: controller.signal,
-      headers: {
-        Accept: "image/*",
-      },
-    });
+    const buffer = localMediaFilePath
+      ? await readFile(localMediaFilePath)
+      : await (async () => {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
-    clearTimeout(timeout);
+          const imageRes = await fetch(sourceUrl.toString(), {
+            signal: controller.signal,
+            headers: {
+              Accept: "image/*",
+            },
+          });
 
-    if (!imageRes.ok) {
-      return NextResponse.json({ error: "Image not found" }, { status: 404 });
-    }
+          clearTimeout(timeout);
 
-    const contentType = imageRes.headers.get("content-type") || "";
-    if (!contentType.startsWith("image/")) {
-      return NextResponse.json({ error: "Unsupported content type" }, { status: 415 });
-    }
+          if (!imageRes.ok) {
+            throw new Error(`Image fetch failed with status ${imageRes.status}`);
+          }
 
-    const contentLength = parseInt(imageRes.headers.get("content-length") || "0", 10);
-    if (Number.isFinite(contentLength) && contentLength > MAX_IMAGE_BYTES) {
-      return NextResponse.json({ error: "Image too large" }, { status: 413 });
-    }
+          const contentType = imageRes.headers.get("content-type") || "";
+          if (!contentType.startsWith("image/")) {
+            throw new Error("Unsupported content type");
+          }
 
-    const buffer = Buffer.from(await imageRes.arrayBuffer());
+          const contentLength = parseInt(imageRes.headers.get("content-length") || "0", 10);
+          if (Number.isFinite(contentLength) && contentLength > MAX_IMAGE_BYTES) {
+            throw new Error("Image too large");
+          }
+
+          return Buffer.from(await imageRes.arrayBuffer());
+        })();
+
     if (buffer.length > MAX_IMAGE_BYTES) {
       return NextResponse.json({ error: "Image too large" }, { status: 413 });
     }
