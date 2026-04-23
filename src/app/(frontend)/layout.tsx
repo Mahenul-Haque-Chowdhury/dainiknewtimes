@@ -10,6 +10,8 @@ import { getBreakingNews } from "@/lib/payload-helpers";
 import { logWarn } from "@/lib/logger";
 import "../globals.css";
 
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "ca-pub-8911175089831107";
+
 const notoBengali = Noto_Sans_Bengali({
   subsets: ["bengali"],
   weight: ["400", "500", "600", "700", "800"],
@@ -20,6 +22,16 @@ const notoBengali = Noto_Sans_Bengali({
 export const metadata = {
   title: "দৈনিক নিউ টাইমস - সত্য ও নিরপেক্ষ সংবাদের প্রতিশ্রুতি",
   description: "দৈনিক নিউ টাইমস - বাংলাদেশের সত্য ও নিরপেক্ষ সংবাদপত্র।",
+  other: {
+    "google-adsense-account": ADSENSE_CLIENT,
+  },
+  icons: {
+    icon: [
+      { url: "/images/dainiknewtimes-logo.png", type: "image/png" },
+    ],
+    shortcut: "/images/dainiknewtimes-logo.png",
+    apple: "/images/dainiknewtimes-logo.png",
+  },
 };
 
 export const revalidate = 60;
@@ -29,7 +41,7 @@ export default async function FrontendLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+  const adsenseClient = ADSENSE_CLIENT;
 
   let headlines: { text: string; link?: string }[] = [];
   try {
@@ -47,23 +59,25 @@ export default async function FrontendLayout({
 
   return (
     <html lang="bn" suppressHydrationWarning>
-      <body className={`${notoBengali.variable} font-bengali antialiased`}>
-        <Header />
-        <Navbar />
-        <main className="pb-10 pt-2 lg:pt-3">{children}</main>
-        <Footer />
-        <BottomTicker headlines={headlines} />
-        <ScrollToTop />
-
+      <head>
+        <meta name="google-adsense-account" content={ADSENSE_CLIENT} />
+      </head>
+      <body className={`${notoBengali.variable} font-bengali antialiased pb-14 sm:pb-16`}>
         {adsenseClient && (
           <Script
             id="adsense-loader"
             async
-            strategy="afterInteractive"
+            strategy="beforeInteractive"
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
             crossOrigin="anonymous"
           />
         )}
+        <Header />
+        <Navbar />
+        <main className="pb-8 pt-2 lg:pt-3">{children}</main>
+        <Footer />
+        <BottomTicker headlines={headlines} />
+        <ScrollToTop />
       </body>
     </html>
   );

@@ -15,8 +15,8 @@ export default function BottomTicker({ headlines = [] }: BottomTickerProps) {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-navy text-white z-40 py-1.5 border-t border-primary-blue">
       <div className="max-w-300 mx-auto px-4 flex items-center gap-3">
-        <span className="bg-primary-red text-white text-xs px-2 py-0.5 rounded shrink-0 font-medium">
-          শিরোনাম
+        <span className="bg-primary-red text-white text-sm px-4 py-2 rounded shrink-0 font-bold leading-none">
+          ব্রেকিং নিউজ
         </span>
         <div className="overflow-hidden flex-1 no-scrollbar">
           <div className="ticker-animate whitespace-nowrap text-sm">
@@ -33,7 +33,7 @@ export default function BottomTicker({ headlines = [] }: BottomTickerProps) {
                     )}
                   </span>
                 ))
-              : "সর্বশেষ সংবাদ শিরোনাম এখানে প্রদর্শিত হবে।"}
+              : "ব্রেকিং নিউজ এখানে প্রদর্শিত হবে।"}
           </div>
         </div>
         <button

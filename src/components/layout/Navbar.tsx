@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import SiteLogo from "@/components/ui/SiteLogo";
 
 const categories = [
   { name: "প্রচ্ছদ", slug: "/" },
@@ -57,12 +56,12 @@ export default function Navbar() {
         <div className="max-w-300 mx-auto px-4">
           <div className="flex items-center justify-between">
             {/* Desktop nav */}
-            <ul className="hidden lg:flex flex-wrap items-center gap-0">
+            <ul className="hidden lg:grid w-full grid-cols-14 items-stretch">
               {categories.map((cat) => (
                 <li key={cat.slug}>
                   <Link
                     href={cat.slug}
-                    className={`block px-3 py-2.5 text-sm font-medium transition hover:bg-primary-blue hover:text-white ${
+                    className={`flex h-full items-center justify-center px-2 py-3 text-center text-sm font-medium transition hover:bg-primary-blue hover:text-white ${
                       pathname === cat.slug ? "bg-primary-red text-white" : "text-text-dark"
                     }`}
                   >
@@ -72,11 +71,11 @@ export default function Navbar() {
               ))}
             </ul>
 
-            {/* Mobile: site name + hamburger */}
+            {/* Mobile: ad box + hamburger */}
             <div className="lg:hidden flex items-center justify-between w-full py-2">
-                <Link href="/" className="block leading-none">
-                  <SiteLogo className="w-[118px] sm:w-[140px]" imageClassName="object-contain" />
-              </Link>
+              <div className="flex h-10 w-32 items-center justify-center rounded border border-dashed border-gray-300 bg-gray-50 px-3 text-[11px] font-medium text-gray-400 sm:w-36">
+                বিজ্ঞাপন
+              </div>
               <button
                 className="p-2 text-text-dark"
                 onClick={() => setIsMobileOpen(!isMobileOpen)}

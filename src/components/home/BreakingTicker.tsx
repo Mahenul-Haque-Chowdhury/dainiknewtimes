@@ -14,8 +14,8 @@ export default function BreakingTicker({ headlines }: BreakingTickerProps) {
   if (!visible) return null;
 
   return (
-    <div className="bg-white border border-dashed border-primary-red rounded mx-4 my-3">
-      <div className="max-w-300 mx-auto flex items-center gap-0">
+    <div className="max-w-300 mx-auto px-4 my-3">
+      <div className="flex items-center gap-0 rounded border border-dashed border-primary-red bg-white">
         {/* Label */}
         <span className="bg-primary-red text-white text-sm px-4 py-2 font-bold shrink-0 rounded-l">
           শিরোনাম :

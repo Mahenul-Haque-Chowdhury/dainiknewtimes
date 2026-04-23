@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import EpaperFooter from "@/components/epaper/EpaperFooter";
 import SiteLogo from "@/components/ui/SiteLogo";
 
 export const metadata = {
@@ -36,9 +37,7 @@ export default function EpaperLayout({
 
       <main>{children}</main>
 
-      <footer className="bg-navy text-white/60 text-center text-xs py-3 mt-8">
-        &copy; {new Date().getFullYear()} দৈনিক নিউ টাইমস। সকল স্বত্ব সংরক্ষিত।
-      </footer>
+      <EpaperFooter />
     </div>
   );
 }
