@@ -50,8 +50,6 @@ interface EpaperData {
 const round2 = (value: number) => Math.round(value * 100) / 100;
 const autoGroupId = (pageNum: number, zoneIdx: number) => `p${pageNum}z${zoneIdx}`;
 const AUTO_TITLE_PATTERN = /^(Zone|সংবাদ)\s+\d+$/i;
-const AUTO_GROUP_PATTERN = /^(p\d+z\d+(?:-\d+)?|news-\d{4}-\d{2}-\d{2}-p\d+-z\d+)$/i;
-const AUTO_SLUG_PATTERN = /^(news-\d{4}-\d{2}-\d{2}-p\d+-z\d+|zone-\d+)$/i;
 
 const getIssueDateKey = (issueDate?: string) => {
   if (!issueDate) return "undated";
@@ -85,11 +83,12 @@ const normalizeZoneMeta = (zone: Zone, issueDate: string | undefined, pageNumber
 
   return {
     ...zone,
-    title: !zone.title || AUTO_TITLE_PATTERN.test(zone.title) ? autoMeta.title : zone.title,
-    articleGroup: !zone.articleGroup || AUTO_GROUP_PATTERN.test(zone.articleGroup) ? autoMeta.articleGroup : zone.articleGroup,
-    linkedArticleSlug: !zone.linkedArticleSlug || AUTO_SLUG_PATTERN.test(zone.linkedArticleSlug)
-      ? autoMeta.linkedArticleSlug
-      : zone.linkedArticleSlug,
+    // Only backfill empty fields; never overwrite existing linkage metadata.
+    title: zone.title?.trim() ? zone.title : autoMeta.title,
+    articleGroup: zone.articleGroup?.trim() ? zone.articleGroup : autoMeta.articleGroup,
+    linkedArticleSlug: zone.linkedArticleSlug?.trim()
+      ? zone.linkedArticleSlug
+      : autoMeta.linkedArticleSlug,
   };
 };
 
@@ -140,7 +139,14 @@ export default function ZoneEditorPage({ params }: { params: Promise<{ id: strin
     group: string;
     title: string;
   } | null>(null);
+  const [lastConnection, setLastConnection] = useState<{
+    title: string;
+    group: string;
+    sourcePageNumber: number;
+    targetPageNumber: number;
+  } | null>(null);
   const titleInputRef = useRef<HTMLInputElement | null>(null);
+  const allPageZonesRef = useRef<Record<number, Zone[]>>({});
 
   useEffect(() => {
     let mounted = true;
@@ -248,15 +254,24 @@ export default function ZoneEditorPage({ params }: { params: Promise<{ id: strin
     setAllPageZones((prev) => ({ ...prev, [selectedPageIndex]: zones }));
   }, [zones, selectedPageIndex]);
 
+  useEffect(() => {
+    allPageZonesRef.current = allPageZones;
+  }, [allPageZones]);
+
   const switchToPage = useCallback(
     (newIdx: number) => {
-      setAllPageZones((prev) => ({ ...prev, [selectedPageIndex]: zones }));
-      setZones(allPageZones[newIdx] || []);
+      const snapshot = {
+        ...allPageZonesRef.current,
+        [selectedPageIndex]: zones,
+      };
+
+      setAllPageZones(snapshot);
+      setZones(snapshot[newIdx] || []);
       setSelectedPageIndex(newIdx);
       setSelectedZoneId(null);
       setSaveMessage(null);
     },
-    [allPageZones, selectedPageIndex, zones]
+    [selectedPageIndex, zones]
   );
 
   const updateZone = (id: string, updates: Partial<Zone>) => {
@@ -428,12 +443,23 @@ export default function ZoneEditorPage({ params }: { params: Promise<{ id: strin
         return;
       }
 
+      const sourcePageNumber = epaper?.pages?.[pendingConnection.sourcePageIndex]?.pageNumber
+        ?? pendingConnection.sourcePageIndex + 1;
+      const targetPageNumber = epaper?.pages?.[selectedPageIndex]?.pageNumber
+        ?? selectedPageIndex + 1;
+
       updateZoneOnPage(selectedPageIndex, zoneId, { articleGroup: pendingConnection.group });
       setSelectedZoneId(zoneId);
+      setLastConnection({
+        title: pendingConnection.title,
+        group: pendingConnection.group,
+        sourcePageNumber,
+        targetPageNumber,
+      });
       setPendingConnection(null);
       setSaveMessage(`জোন সংযুক্ত হয়েছে: ${pendingConnection.title || "নির্বাচিত সংবাদ"}`);
     },
-    [pendingConnection, selectedPageIndex, updateZoneOnPage]
+    [epaper?.pages, pendingConnection, selectedPageIndex, updateZoneOnPage]
   );
 
   const startConnectionMode = useCallback(() => {
@@ -454,6 +480,7 @@ export default function ZoneEditorPage({ params }: { params: Promise<{ id: strin
       group,
       title: sourceZone.title,
     });
+    setLastConnection(null);
     setSaveMessage("Continuation mode চালু আছে - এখন অন্য পাতায় গিয়ে matching zone সিলেক্ট করুন");
   }, [getStandaloneGroupId, selectedPageIndex, selectedZoneId, updateZoneOnPage, zones]);
 
@@ -1018,7 +1045,13 @@ export default function ZoneEditorPage({ params }: { params: Promise<{ id: strin
 
             {pendingConnection && (
               <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                Continuation mode is active. Source: {pendingConnection.title || "Selected zone"} on page {epaper.pages?.[pendingConnection.sourcePageIndex]?.pageNumber}. Switch to page 2 or 3 and select the continuation zone there.
+                Continuation mode চালু আছে। Source: {pendingConnection.title || "Selected zone"} (পৃষ্ঠা {epaper.pages?.[pendingConnection.sourcePageIndex]?.pageNumber}). এখন অন্য পাতায় গিয়ে target zone সিলেক্ট করুন।
+              </div>
+            )}
+
+            {lastConnection && (
+              <div className="mb-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+                Connected: {lastConnection.title || "নির্বাচিত সংবাদ"} | পৃষ্ঠা {lastConnection.sourcePageNumber} থেকে পৃষ্ঠা {lastConnection.targetPageNumber} | গ্রুপ: {lastConnection.group}
               </div>
             )}
 

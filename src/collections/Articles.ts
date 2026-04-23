@@ -18,6 +18,16 @@ export const Articles: CollectionConfig = {
   },
   fields: [
     {
+      name: "legacyBanglaPasteHelper",
+      type: "ui",
+      admin: {
+        position: "sidebar",
+        components: {
+          Field: "@/components/admin/LegacyBanglaPasteHelper",
+        },
+      },
+    },
+    {
       name: "title",
       type: "text",
       required: true,
