@@ -178,15 +178,8 @@ export default function FlipbookViewer({
                           width: `${clip.zoneW}%`,
                           height: `${clip.zoneH}%`,
                         }}
-                        aria-label={clip.title || `সংবাদ ${index + 1}`}
-                        title={clip.title || `সংবাদ ${index + 1}`}
-                      >
-                        <span
-                          className="absolute bottom-full left-1/2 mb-1 -translate-x-1/2 whitespace-nowrap rounded bg-navy px-2 py-1 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                          {clip.title || `সংবাদ ${index + 1}`}
-                        </span>
-                      </Link>
+                        aria-label="সংবাদ খুলুন"
+                      />
                     );
                   })}
                 </div>
