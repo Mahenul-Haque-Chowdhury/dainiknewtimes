@@ -655,6 +655,7 @@ export interface SiteSetting {
     youtube?: string | null;
     twitter?: string | null;
     instagram?: string | null;
+    linkedin?: string | null;
   };
   contactInfo?: {
     phone?: string | null;
@@ -705,6 +706,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         youtube?: T;
         twitter?: T;
         instagram?: T;
+        linkedin?: T;
       };
   contactInfo?:
     | T

@@ -50,7 +50,7 @@ export default async function Header() {
       {/* Logo + Social row */}
       <div className="max-w-300 mx-auto py-3 px-4 flex items-center justify-between gap-3">
         <Link href="/" className="block shrink-0">
-          <SiteLogo className="w-[155px] sm:w-[220px] md:w-[250px]" imageClassName="object-contain" priority />
+          <SiteLogo className="w-38.75 sm:w-55 md:w-62.5" imageClassName="object-contain" priority />
           <p className="text-[10px] sm:text-xs text-text-muted">{tagline}</p>
         </Link>
 

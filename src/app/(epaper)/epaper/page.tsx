@@ -4,7 +4,7 @@ import Link from "next/link";
 import EpaperClientViewer from "@/components/epaper/EpaperClientViewer";
 import DateArchive from "@/components/epaper/DateArchive";
 import AdZone from "@/components/ui/AdZone";
-import { getLatestEPaper, getEPaperByDate } from "@/lib/payload-helpers";
+import { getTodayEPaperOrLatest, getEPaperByDate } from "@/lib/payload-helpers";
 import { formatBengaliDate } from "@/lib/bengali-date";
 import { getSiteUrl } from "@/lib/env";
 
@@ -18,9 +18,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
   return {
     title: date
-      ? `ই-পেপার — ${date} | দৈনিক নিউ টাইমস`
+      ? `ই-পেপার | ${date} | দৈনিক নিউ টাইমস`
       : "ই-পেপার | দৈনিক নিউ টাইমস",
-    description: "দৈনিক নিউ টাইমস ই-পেপার — পত্রিকার পাতা অনলাইনে পড়ুন",
+    description: "দৈনিক নিউ টাইমস ই-পেপার | পত্রিকার পাতা অনলাইনে পড়ুন",
     alternates: {
       canonical: date
         ? `${siteUrl}/epaper?date=${encodeURIComponent(date)}`
@@ -35,7 +35,7 @@ export default async function EpaperPage({ searchParams }: Props) {
   // Fetch by date or latest
   const epaper = date
     ? await getEPaperByDate(date)
-    : await getLatestEPaper();
+    : await getTodayEPaperOrLatest();
 
   // Sort pages by page number
   const pages = epaper?.pages
@@ -121,23 +121,6 @@ export default async function EpaperPage({ searchParams }: Props) {
         {/* Right sidebar */}
         <aside className="lg:col-span-3 space-y-4">
           <DateArchive currentDate={date || issueDate || undefined} />
-
-          {/* Quick page nav */}
-          {pages.length > 0 && (
-            <div className="bg-white rounded-lg shadow p-4">
-              <h3 className="font-bold text-sm mb-3 text-navy">পাতা নির্বাচন</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {pageLabels.map((label: string, i: number) => (
-                  <div
-                    key={i}
-                    className="text-xs bg-gray-50 border border-gray-200 rounded px-2 py-1.5 text-center"
-                  >
-                    {label}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Info box */}
           <div className="bg-white rounded-lg shadow p-4">

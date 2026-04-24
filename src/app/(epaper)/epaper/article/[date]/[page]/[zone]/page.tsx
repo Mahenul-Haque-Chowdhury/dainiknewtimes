@@ -13,7 +13,7 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
   const { date, page } = await params;
   return {
-    title: `সংবাদ — পাতা ${page} | ই-পেপার ${date}`,
+    title: `সংবাদ | পাতা ${page} | ই-পেপার ${date}`,
     description: "দৈনিক নিউ টাইমস ই-পেপার সংবাদ",
   };
 }
@@ -99,6 +99,12 @@ export default async function ArticleDisplayPage({ params }: Props) {
     zoneH: number;
     title: string;
   }
+
+  const getCropDisplayWidth = (zoneWidthPercent: number) => {
+    // Keep relative differences from selected zone width while staying readable on mobile.
+    const scaledWidth = Math.round(zoneWidthPercent * 2.4 + 15);
+    return Math.max(42, Math.min(100, scaledWidth));
+  };
 
   interface RelatedClipPart {
     clip: any;
@@ -290,21 +296,27 @@ export default async function ArticleDisplayPage({ params }: Props) {
             ) : cropParts.length > 0 ? (
               <div className="space-y-3">
                 {cropParts.map((part, idx) => (
-                  <div key={idx} className="border border-stone-200 bg-white shadow-sm">
-                    <Image
-                      src={`/api/epaper/crop?src=${encodeURIComponent(part.pageImageUrl)}&x=${part.zoneX}&y=${part.zoneY}&w=${part.zoneW}&h=${part.zoneH}`}
-                      alt={part.title || `অংশ ${idx + 1}`}
-                      width={1600}
-                      height={2200}
-                      className="h-auto w-full"
-                      unoptimized
-                      loading={idx === 0 ? "eager" : "lazy"}
-                    />
-                    {cropParts.length > 1 && (
-                      <div className="border-t border-stone-200 bg-stone-50 px-3 py-1.5 text-center text-xs text-stone-500">
-                        পাতা {part.pageNumber}
-                      </div>
-                    )}
+                  <div
+                    key={idx}
+                    className="mx-auto"
+                    style={{ width: `${getCropDisplayWidth(part.zoneW)}%` }}
+                  >
+                    <div className="border border-stone-200 bg-white shadow-sm">
+                      <Image
+                        src={`/api/epaper/crop?src=${encodeURIComponent(part.pageImageUrl)}&x=${part.zoneX}&y=${part.zoneY}&w=${part.zoneW}&h=${part.zoneH}`}
+                        alt={part.title || `অংশ ${idx + 1}`}
+                        width={1600}
+                        height={2200}
+                        className="h-auto w-full"
+                        unoptimized
+                        loading={idx === 0 ? "eager" : "lazy"}
+                      />
+                      {cropParts.length > 1 && (
+                        <div className="border-t border-stone-200 bg-stone-50 px-3 py-1.5 text-center text-xs text-stone-500">
+                          পাতা {part.pageNumber}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

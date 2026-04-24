@@ -10,6 +10,7 @@ export interface SiteSettingsResult {
     youtube?: string;
     twitter?: string;
     instagram?: string;
+    linkedin?: string;
   };
   contactInfo?: {
     phone?: string;
@@ -235,6 +236,24 @@ export async function getLatestEPaper() {
     depth: 2,
   });
   return result.docs[0] || null;
+}
+
+function getTodayDateInDhaka(): string {
+  // E-paper issue dates should follow Bangladesh local day boundaries.
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Dhaka",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
+export async function getTodayEPaperOrLatest() {
+  const todayDate = getTodayDateInDhaka();
+  const todaysIssue = await getEPaperByDate(todayDate);
+  if (todaysIssue) return todaysIssue;
+
+  return getLatestEPaper();
 }
 
 export async function getSiteSettings() {

@@ -36,6 +36,7 @@ export const SiteSettings: GlobalConfig = {
         { name: "youtube", type: "text", label: "YouTube URL" },
         { name: "twitter", type: "text", label: "X / Twitter URL" },
         { name: "instagram", type: "text", label: "Instagram URL" },
+        { name: "linkedin", type: "text", label: "LinkedIn URL" },
       ],
     },
     {
