@@ -11,7 +11,7 @@ import { slugify } from "@/lib/slug";
 
 const AUTO_CONVERT_FIELD_NAMES = new Set(["title", "slug", "excerpt"]);
 
-function isTextInput(element: Element | null): element is HTMLInputElement | HTMLTextAreaElement {
+function isTextInput(element: EventTarget | null): element is HTMLInputElement | HTMLTextAreaElement {
   return element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement;
 }
 
