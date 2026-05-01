@@ -17,6 +17,7 @@ import {
   getPopularArticles,
   getArticlesByCategory,
   getBreakingNews,
+  getHomepageCategoryTabs,
 } from "@/lib/payload-helpers";
 import { getSiteUrl } from "@/lib/env";
 
@@ -34,11 +35,8 @@ export default async function HomePage() {
     latestResult,
     popularResult,
     breakingNews,
+    categoryTabs,
     sportsResult,
-    politicsResult,
-    financeResult,
-    educationResult,
-    techResult,
     countryResult,
     entertainmentResult,
     diasporaResult,
@@ -48,11 +46,8 @@ export default async function HomePage() {
     getPublishedArticles(10),
     getPopularArticles(5),
     getBreakingNews(),
+    getHomepageCategoryTabs(4, 8),
     getArticlesByCategory("sports", 8),
-    getArticlesByCategory("politics", 8),
-    getArticlesByCategory("finance", 8),
-    getArticlesByCategory("education", 8),
-    getArticlesByCategory("technology", 8),
     getArticlesByCategory("country", 5),
     getArticlesByCategory("entertainment", 5),
     getArticlesByCategory("diaspora", 5),
@@ -69,14 +64,6 @@ export default async function HomePage() {
   const entertainment = entertainmentResult?.articles?.docs || [];
   const diaspora = diasporaResult?.articles?.docs || [];
   const editorial = editorialResult?.articles?.docs || [];
-
-  // Build category tabs data
-  const categoryTabs = [
-    { name: "রাজনীতি", slug: "politics", articles: politicsResult?.articles?.docs || [] },
-    { name: "অর্থ-বাণিজ্য", slug: "finance", articles: financeResult?.articles?.docs || [] },
-    { name: "শিক্ষাঙ্গন", slug: "education", articles: educationResult?.articles?.docs || [] },
-    { name: "তথ্য-প্রযুক্তি", slug: "technology", articles: techResult?.articles?.docs || [] },
-  ];
 
   // Use featured articles as photo gallery (articles with images)
   const galleryImages = featured.filter((a: any) => a.featuredImage).slice(0, 6);

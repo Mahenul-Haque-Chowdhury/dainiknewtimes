@@ -64,6 +64,11 @@ export const Articles: CollectionConfig = {
       relationTo: "media",
       required: true,
       label: "Featured Image (প্রধান ছবি)",
+      admin: {
+        components: {
+          Field: "@/components/admin/FeaturedImageUploadField",
+        },
+      },
     },
     {
       name: "category",

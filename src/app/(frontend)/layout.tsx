@@ -6,7 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BottomTicker from "@/components/layout/BottomTicker";
 import ScrollToTop from "@/components/ui/ScrollToTop";
-import { getBreakingNews } from "@/lib/payload-helpers";
+import { getAllCategories, getBreakingNews } from "@/lib/payload-helpers";
 import { logWarn } from "@/lib/logger";
 import "../globals.css";
 
@@ -44,11 +44,15 @@ export default async function FrontendLayout({
   const adsenseClient = ADSENSE_CLIENT;
 
   let headlines: { text: string; link?: string }[] = [];
+  let categories: { name: string; slug: string }[] = [];
   try {
-    const breakingNews = await getBreakingNews();
+    const [breakingNews, categoriesResult] = await Promise.all([getBreakingNews(), getAllCategories()]);
     headlines = ((breakingNews as any)?.headlines || [])
       .filter((h: any) => h.isActive !== false)
       .map((h: any) => ({ text: h.text, link: h.link }));
+    categories = categoriesResult.docs
+      .filter((category) => typeof category.slug === "string" && category.slug.length > 0)
+      .map((category) => ({ name: category.name, slug: category.slug }));
   } catch (error) {
     logWarn("Failed to load breaking news headlines", {
       error: error instanceof Error ? error.message : String(error),
@@ -73,7 +77,7 @@ export default async function FrontendLayout({
           />
         )}
         <Header />
-        <Navbar />
+        <Navbar categories={categories} />
         <main className="pb-8 pt-2 lg:pt-3">{children}</main>
         <Footer />
         <BottomTicker headlines={headlines} />

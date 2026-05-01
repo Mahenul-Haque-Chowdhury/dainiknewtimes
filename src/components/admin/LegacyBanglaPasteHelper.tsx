@@ -11,6 +11,18 @@ import { slugify } from "@/lib/slug";
 
 const AUTO_CONVERT_FIELD_NAMES = new Set(["title", "slug", "excerpt"]);
 
+function setElementValue(target: HTMLInputElement | HTMLTextAreaElement, value: string) {
+  const prototype = target instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+  const descriptor = Object.getOwnPropertyDescriptor(prototype, "value");
+
+  if (descriptor?.set) {
+    descriptor.set.call(target, value);
+    return;
+  }
+
+  target.value = value;
+}
+
 function isTextInput(element: EventTarget | null): element is HTMLInputElement | HTMLTextAreaElement {
   return element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement;
 }
@@ -48,7 +60,7 @@ function insertIntoInput(target: HTMLInputElement | HTMLTextAreaElement, text: s
   const end = target.selectionEnd ?? start;
   const nextValue = `${target.value.slice(0, start)}${text}${target.value.slice(end)}`;
 
-  target.value = nextValue;
+  setElementValue(target, nextValue);
   target.setSelectionRange(start + text.length, start + text.length);
   target.dispatchEvent(new Event("input", { bubbles: true }));
 }
@@ -58,7 +70,7 @@ function setInputValue(target: HTMLInputElement | HTMLTextAreaElement, value: st
     return;
   }
 
-  target.value = value;
+  setElementValue(target, value);
   target.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
@@ -121,7 +133,7 @@ export default function LegacyBanglaPasteHelper() {
       let didChange = false;
 
       if (convertedValue !== target.value) {
-        target.value = convertedValue;
+        setElementValue(target, convertedValue);
         didChange = true;
       }
 
@@ -139,7 +151,7 @@ export default function LegacyBanglaPasteHelper() {
         const normalizedSlug = slugify(convertedValue);
 
         if (normalizedSlug !== target.value) {
-          target.value = normalizedSlug;
+          setElementValue(target, normalizedSlug);
           didChange = true;
         }
       }

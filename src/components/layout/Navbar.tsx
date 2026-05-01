@@ -4,23 +4,19 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const categories = [
-  { name: "প্রচ্ছদ", slug: "/" },
-  { name: "জাতীয়", slug: "/national" },
-  { name: "বিদেশ", slug: "/international" },
-  { name: "ময়মনসিংহ", slug: "/mymensingh" },
-  { name: "আইন-আদালত", slug: "/law-court" },
-  { name: "স্বাস্থ-শিক্ষা", slug: "/health-education" },
-  { name: "খেলা", slug: "/sports" },
-  { name: "সংস্কৃতি", slug: "/culture" },
-  { name: "গবেষনা-উন্নয়ন", slug: "/research-development" },
-  { name: "মতামত", slug: "/opinion" },
-];
+type NavbarCategory = {
+  name: string;
+  slug: string;
+};
 
-export default function Navbar() {
+export default function Navbar({ categories }: { categories: NavbarCategory[] }) {
   const [isSticky, setIsSticky] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const pathname = usePathname();
+  const navItems = [{ name: "প্রচ্ছদ", slug: "/" }, ...categories.map((category) => ({
+    name: category.name,
+    slug: `/${category.slug}`,
+  }))];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,7 +49,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between">
             {/* Desktop nav */}
             <ul className="hidden lg:flex w-full items-stretch justify-between gap-1 whitespace-nowrap">
-              {categories.map((cat) => (
+              {navItems.map((cat) => (
                 <li key={cat.slug} className="flex-1 min-w-0">
                   <Link
                     href={cat.slug}
@@ -127,7 +123,7 @@ export default function Navbar() {
 
         {/* Drawer nav links */}
         <ul className="overflow-y-auto max-h-[calc(100vh-120px)]">
-          {categories.map((cat) => (
+          {navItems.map((cat) => (
             <li key={cat.slug}>
               <Link
                 href={cat.slug}

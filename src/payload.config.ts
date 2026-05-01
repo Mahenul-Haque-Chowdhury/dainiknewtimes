@@ -4,8 +4,12 @@ import { fileURLToPath } from "url";
 import { buildConfig } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import {
+  defaultColors,
+  EXPERIMENTAL_TableFeature,
   FixedToolbarFeature,
+  InlineToolbarFeature,
   lexicalEditor,
+  TextStateFeature,
 } from "@payloadcms/richtext-lexical";
 
 import { Users } from "./collections/Users";
@@ -33,6 +37,21 @@ export default buildConfig({
     features: ({ defaultFeatures }) => [
       ...defaultFeatures.filter((feature) => feature.key !== "toolbarInline"),
       FixedToolbarFeature(),
+      InlineToolbarFeature(),
+      EXPERIMENTAL_TableFeature(),
+      TextStateFeature({
+        state: {
+          color: {
+            ...defaultColors.text,
+            urgentRed: { label: "Urgent Red", css: { color: "#b91c1c" } },
+            deepBlue: { label: "Deep Blue", css: { color: "#1d4ed8" } },
+          },
+          highlight: {
+            yellow: { label: "Yellow Highlight", css: { background: "#fef08a", color: "#111827" } },
+            sky: { label: "Sky Highlight", css: { background: "#dbeafe", color: "#111827" } },
+          },
+        },
+      }),
     ],
   }),
   secret: serverEnv.PAYLOAD_SECRET,

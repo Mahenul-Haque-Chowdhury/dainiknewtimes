@@ -193,6 +193,22 @@ export async function getAllCategories() {
   });
 }
 
+export async function getHomepageCategoryTabs(limit = 4, articleLimit = 8) {
+  const categoriesResult = await getAllCategories();
+  const categories = categoriesResult.docs.filter((category) => category.slug);
+  const selectedCategories = categories.slice(0, limit);
+
+  const articleResults = await Promise.all(
+    selectedCategories.map((category) => getArticlesByCategory(category.slug, articleLimit))
+  );
+
+  return selectedCategories.map((category, index) => ({
+    name: category.name,
+    slug: category.slug,
+    articles: articleResults[index]?.articles?.docs || [],
+  }));
+}
+
 export async function searchArticles(query: string, limit = 10, page = 1) {
   const payload = await getPayloadClient();
   return payload.find({
