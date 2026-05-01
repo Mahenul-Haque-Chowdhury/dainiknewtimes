@@ -5,9 +5,14 @@ import React, { useState } from "react";
 interface SocialShareProps {
   url: string;
   title: string;
+  variant?: "block" | "inline";
 }
 
-export default function SocialShare({ url, title }: SocialShareProps) {
+export default function SocialShare({
+  url,
+  title,
+  variant = "block",
+}: SocialShareProps) {
   const [copied, setCopied] = useState(false);
   const encoded = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
@@ -22,8 +27,13 @@ export default function SocialShare({ url, title }: SocialShareProps) {
     }
   };
 
+  const containerClassName =
+    variant === "inline"
+      ? "flex items-center justify-end gap-2"
+      : "flex items-center gap-2 py-3 border-t border-b border-gray-200 my-4";
+
   return (
-    <div className="flex items-center gap-2 py-3 border-t border-b border-gray-200 my-4">
+    <div className={containerClassName}>
       <span className="text-sm text-text-muted font-medium mr-1">শেয়ার:</span>
 
       {/* Facebook */}

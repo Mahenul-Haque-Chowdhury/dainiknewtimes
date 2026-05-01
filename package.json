@@ -4,7 +4,7 @@
   "description": "দৈনিক নিউ টাইমস - Bengali newspaper portal",
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

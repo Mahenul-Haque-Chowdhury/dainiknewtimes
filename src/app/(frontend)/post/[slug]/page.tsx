@@ -114,16 +114,33 @@ export default async function ArticlePage({ params }: Props) {
         <article className="lg:col-span-9">
           <Breadcrumb category={category} articleTitle={article.title} />
 
-          {/* Category badge + meta */}
-          <div className="mb-3 flex flex-wrap items-center gap-2">
+          {/* Title */}
+          <h1 className="mb-3 text-2xl font-bold leading-tight md:text-3xl">
+            {article.title}
+          </h1>
+
+          {/* Category + date */}
+          <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-text-muted">
             {category && (
-              <span className="bg-primary-red text-white text-xs px-2 py-1 rounded font-medium">
+              <span className="font-medium text-text-dark">
                 {category.name}
               </span>
             )}
-            <span className="text-text-muted text-xs">
+            <span aria-hidden="true" className="text-gray-400">
+              |
+            </span>
+            <span>
               {formatBengaliDate(article.publishDate)}
             </span>
+          </div>
+
+          {/* Reporter + share */}
+          <div className="mb-4 flex flex-col gap-3 border-b border-gray-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-text-muted">
+              প্রতিবেদক: <span className="font-medium text-text-dark">{reporter?.name || "Publisher"}</span>
+            </p>
+
+            <SocialShare url={articleUrl} title={article.title} variant="inline" />
           </div>
 
           {/* Featured Image */}
@@ -141,21 +158,6 @@ export default async function ArticlePage({ params }: Props) {
               <div className="w-full h-full bg-gray-200" />
             )}
           </div>
-
-          {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-bold leading-tight mb-3">
-            {article.title}
-          </h1>
-
-          {/* Reporter */}
-          {reporter && (
-            <p className="text-sm text-text-muted mb-4">
-              প্রতিবেদক: <span className="font-medium text-text-dark">{reporter.name}</span>
-            </p>
-          )}
-
-          {/* Share buttons */}
-          <SocialShare url={articleUrl} title={article.title} />
 
           {/* In-article ad */}
           <div className="my-4 hidden md:block">

@@ -6,19 +6,15 @@ import { usePathname } from "next/navigation";
 
 const categories = [
   { name: "প্রচ্ছদ", slug: "/" },
-  { name: "জাতীয়", slug: "/national" },
-  { name: "দেশজুড়ে", slug: "/country" },
-  { name: "আন্তর্জাতিক", slug: "/international" },
-  { name: "শিক্ষাঙ্গন", slug: "/education" },
-  { name: "রাজনীতি", slug: "/politics" },
-  { name: "অর্থ-বাণিজ্য", slug: "/finance" },
-  { name: "তথ্য-প্রযুক্তি", slug: "/technology" },
+  { name: "জাতীয়", slug: "/national" },
+  { name: "বিদেশ", slug: "/international" },
+  { name: "ময়মনসিংহ", slug: "/mymensingh" },
+  { name: "আইন-আদালত", slug: "/law-court" },
+  { name: "স্বাস্থ-শিক্ষা", slug: "/health-education" },
   { name: "খেলা", slug: "/sports" },
-  { name: "বিনোদন", slug: "/entertainment" },
-  { name: "প্রবাস", slug: "/diaspora" },
-  { name: "লাইফস্টাইল", slug: "/lifestyle" },
-  { name: "সম্পাদকীয়", slug: "/editorial" },
-  { name: "ধর্ম", slug: "/religion" },
+  { name: "সংস্কৃতি", slug: "/culture" },
+  { name: "গবেষনা-উন্নয়ন", slug: "/research-development" },
+  { name: "মতামত", slug: "/opinion" },
 ];
 
 export default function Navbar() {
@@ -49,20 +45,20 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`bg-white border-b-2 border-primary-blue z-50 transition-shadow ${
+        className={`border-b-2 border-primary-blue bg-[#0947A3] z-50 transition-shadow ${
           isSticky ? "fixed top-0 left-0 right-0 shadow-md" : ""
         }`}
       >
         <div className="max-w-300 mx-auto px-4">
           <div className="flex items-center justify-between">
             {/* Desktop nav */}
-            <ul className="hidden lg:grid w-full grid-cols-14 items-stretch">
+            <ul className="hidden lg:flex w-full items-stretch justify-between gap-1 whitespace-nowrap">
               {categories.map((cat) => (
-                <li key={cat.slug}>
+                <li key={cat.slug} className="flex-1 min-w-0">
                   <Link
                     href={cat.slug}
-                    className={`flex h-full items-center justify-center px-2 py-3 text-center text-sm font-medium transition hover:bg-primary-blue hover:text-white ${
-                      pathname === cat.slug ? "bg-primary-red text-white" : "text-text-dark"
+                    className={`flex h-full items-center justify-center px-2 py-3 text-center text-sm font-medium text-white transition hover:bg-primary-red hover:text-white ${
+                      pathname === cat.slug ? "bg-primary-red text-white" : "text-white"
                     }`}
                   >
                     {cat.name}
