@@ -14,4 +14,9 @@ describe("slugify", () => {
   it("collapses duplicate dashes", () => {
     expect(slugify("one---two  three")).toBe("one-two-three");
   });
+
+  it("preserves Bangla Unicode characters", () => {
+    expect(slugify("দশম ওয়েজ বোর্ড ঘোষণা"))
+      .toBe("দশম-ওয়েজ-বোর্ড-ঘোষণা");
+  });
 });

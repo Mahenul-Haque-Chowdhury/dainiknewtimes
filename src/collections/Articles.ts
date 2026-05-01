@@ -40,7 +40,8 @@ export const Articles: CollectionConfig = {
       unique: true,
       label: "Slug (URL)",
       admin: {
-        description: "Auto-generated from title. URL-friendly identifier.",
+        readOnly: true,
+        description: "Automatically generated from the title.",
       },
     },
     {

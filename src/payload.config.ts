@@ -3,7 +3,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { buildConfig } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import {
+  FixedToolbarFeature,
+  lexicalEditor,
+} from "@payloadcms/richtext-lexical";
 
 import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
@@ -26,7 +29,12 @@ export default buildConfig({
   },
   collections: [Users, Media, Categories, Articles, EPapers],
   globals: [SiteSettings, BreakingNews],
-  editor: lexicalEditor(),
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) => [
+      ...defaultFeatures.filter((feature) => feature.key !== "toolbarInline"),
+      FixedToolbarFeature(),
+    ],
+  }),
   secret: serverEnv.PAYLOAD_SECRET,
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),

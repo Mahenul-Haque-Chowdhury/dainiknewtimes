@@ -243,7 +243,7 @@ export interface Article {
   id: number;
   title: string;
   /**
-   * Auto-generated from title. URL-friendly identifier.
+   * Automatically generated from the title.
    */
   slug: string;
   /**

@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   convertLegacyBanglaToUnicode,
+  looksLikeLegacyBanglaText,
   shouldConvertLegacyBanglaPaste,
 } from "@/lib/legacy-bangla";
+import { slugify } from "@/lib/slug";
+
+const AUTO_CONVERT_FIELD_NAMES = new Set(["title", "slug", "excerpt"]);
 
 function isTextInput(element: Element | null): element is HTMLInputElement | HTMLTextAreaElement {
   return element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement;
@@ -49,6 +53,23 @@ function insertIntoInput(target: HTMLInputElement | HTMLTextAreaElement, text: s
   target.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
+function setInputValue(target: HTMLInputElement | HTMLTextAreaElement, value: string) {
+  if (target.value === value) {
+    return;
+  }
+
+  target.value = value;
+  target.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+function convertIfLegacy(value: string) {
+  if (!looksLikeLegacyBanglaText(value)) {
+    return value;
+  }
+
+  return convertLegacyBanglaToUnicode(value);
+}
+
 function insertIntoContentEditable(target: HTMLElement, text: string) {
   target.focus();
 
@@ -80,6 +101,7 @@ function insertIntoContentEditable(target: HTMLElement, text: string) {
 
 export default function LegacyBanglaPasteHelper() {
   const [lastConvertedAt, setLastConvertedAt] = useState<number | null>(null);
+  const isProgrammaticUpdateRef = useRef(false);
 
   const helperText = useMemo(() => {
     if (!lastConvertedAt) {
@@ -90,6 +112,45 @@ export default function LegacyBanglaPasteHelper() {
   }, [lastConvertedAt]);
 
   useEffect(() => {
+    const syncManagedField = (target: HTMLInputElement | HTMLTextAreaElement) => {
+      if (!AUTO_CONVERT_FIELD_NAMES.has(target.name)) {
+        return;
+      }
+
+      const convertedValue = convertIfLegacy(target.value);
+      let didChange = false;
+
+      if (convertedValue !== target.value) {
+        target.value = convertedValue;
+        didChange = true;
+      }
+
+      if (target.name === "title") {
+        const slugInput = document.querySelector<HTMLInputElement>('input[name="slug"]');
+
+        if (slugInput) {
+          const nextSlug = slugify(target.value);
+
+          if (slugInput.value !== nextSlug) {
+            setInputValue(slugInput, nextSlug);
+          }
+        }
+      } else if (target.name === "slug") {
+        const normalizedSlug = slugify(convertedValue);
+
+        if (normalizedSlug !== target.value) {
+          target.value = normalizedSlug;
+          didChange = true;
+        }
+      }
+
+      if (didChange) {
+        isProgrammaticUpdateRef.current = true;
+        target.dispatchEvent(new Event("input", { bubbles: true }));
+        isProgrammaticUpdateRef.current = false;
+      }
+    };
+
     const onPaste = (event: ClipboardEvent) => {
       if (!window.location.pathname.includes("/admin/collections/articles/")) {
         return;
@@ -125,10 +186,46 @@ export default function LegacyBanglaPasteHelper() {
       setLastConvertedAt(Date.now());
     };
 
+    const onInput = (event: Event) => {
+      if (isProgrammaticUpdateRef.current) {
+        return;
+      }
+
+      if (!window.location.pathname.includes("/admin/collections/articles/")) {
+        return;
+      }
+
+      const target = event.target;
+
+      if (!isTextInput(target)) {
+        return;
+      }
+
+      if (!AUTO_CONVERT_FIELD_NAMES.has(target.name)) {
+        return;
+      }
+
+      syncManagedField(target);
+    };
+
+    const initializeArticleFields = () => {
+      const managedFields = document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+        'input[name="title"], input[name="slug"], textarea[name="excerpt"]'
+      );
+
+      managedFields.forEach((field) => {
+        syncManagedField(field);
+      });
+    };
+
+    initializeArticleFields();
+
     document.addEventListener("paste", onPaste, true);
+    document.addEventListener("input", onInput, true);
 
     return () => {
       document.removeEventListener("paste", onPaste, true);
+      document.removeEventListener("input", onInput, true);
     };
   }, []);
 
