@@ -13,6 +13,7 @@
 ## Release flow
 1. Merge to main after CI passes.
 2. Deploy to staging.
+3. Run `npm run migrate` against the target database before switching traffic.
 3. Run smoke tests and editor workflow validation.
 4. Approve production deployment.
 5. Post-deploy verification:
@@ -20,6 +21,9 @@
    - Category page
    - Article page
    - E-paper page
+   - `/admin/globals/site-settings`
+   - `/admin/globals/headlines`
+   - `/admin/globals/breaking-news`
    - `/api/health`
    - `/api/ready`
 
