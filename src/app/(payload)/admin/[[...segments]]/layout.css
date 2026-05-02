@@ -1,25 +1,35 @@
 @import "@payloadcms/next/css";
 
 :root {
-	--admin-shell-bg: linear-gradient(180deg, #f6f7fb 0%, #eef2ff 100%);
-	--admin-panel-bg: rgba(255, 255, 255, 0.84);
-	--admin-panel-border: rgba(15, 23, 42, 0.08);
-	--admin-panel-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+	--admin-shell-bg: #f3f6fb;
+	--admin-surface: #ffffff;
+	--admin-surface-soft: #f8fafc;
+	--admin-border: rgba(15, 23, 42, 0.08);
+	--admin-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
 	--admin-accent: #0f766e;
-	--admin-accent-strong: #0b5f59;
+	--admin-accent-strong: #115e59;
 	--admin-ink: #0f172a;
-	--admin-muted: #52607a;
+	--admin-muted: #5b677a;
+	--admin-nav-bg: #111827;
+	--admin-nav-border: rgba(148, 163, 184, 0.14);
+	--admin-nav-text: #dbe4f0;
+	--admin-nav-text-strong: #f8fafc;
 }
 
 html[data-theme="dark"] {
-	--admin-shell-bg: radial-gradient(circle at top, #132238 0%, #08111f 68%);
-	--admin-panel-bg: rgba(15, 23, 42, 0.78);
-	--admin-panel-border: rgba(148, 163, 184, 0.18);
-	--admin-panel-shadow: 0 20px 60px rgba(2, 6, 23, 0.45);
+	--admin-shell-bg: #09111d;
+	--admin-surface: rgba(15, 23, 42, 0.94);
+	--admin-surface-soft: rgba(30, 41, 59, 0.92);
+	--admin-border: rgba(148, 163, 184, 0.18);
+	--admin-shadow: 0 20px 48px rgba(2, 6, 23, 0.36);
 	--admin-accent: #2dd4bf;
 	--admin-accent-strong: #14b8a6;
 	--admin-ink: #f8fafc;
 	--admin-muted: #cbd5e1;
+	--admin-nav-bg: #020817;
+	--admin-nav-border: rgba(148, 163, 184, 0.12);
+	--admin-nav-text: #cbd5e1;
+	--admin-nav-text-strong: #f8fafc;
 }
 
 html,
@@ -31,14 +41,18 @@ body {
 	color: var(--admin-ink);
 }
 
+.template-default {
+	background: transparent;
+}
+
 .app-header {
-	backdrop-filter: blur(20px);
+	backdrop-filter: blur(14px);
 }
 
 .app-header__bg {
 	opacity: 1;
-	background: linear-gradient(120deg, rgba(15, 118, 110, 0.93), rgba(29, 78, 216, 0.82));
-	box-shadow: 0 10px 30px rgba(15, 23, 42, 0.16);
+	background: linear-gradient(90deg, #0f172a, #134e4a);
+	box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
 }
 
 .app-header__content,
@@ -52,10 +66,10 @@ body {
 .nav,
 .template-default__nav,
 .template-default nav {
-	background: linear-gradient(180deg, rgba(7, 12, 25, 0.96), rgba(17, 24, 39, 0.94));
-	color: #e2e8f0;
-	border-right: 1px solid rgba(148, 163, 184, 0.16);
-	box-shadow: 24px 0 48px rgba(15, 23, 42, 0.18);
+	background: var(--admin-nav-bg);
+	color: var(--admin-nav-text);
+	border-right: 1px solid var(--admin-nav-border);
+	box-shadow: none;
 }
 
 .nav a,
@@ -63,64 +77,62 @@ body {
 .template-default__nav a,
 .template-default__nav button,
 .nav-group__toggle {
-	color: #dbe5f2;
+	color: var(--admin-nav-text);
 }
 
 .nav-group {
 	margin: 0 0 1rem;
-	padding: 0.55rem;
-	border: 1px solid rgba(148, 163, 184, 0.12);
-	border-radius: 18px;
-	background: rgba(255, 255, 255, 0.03);
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
 }
 
 .nav-group__toggle {
-	padding: 0.45rem 0.55rem;
+	padding: 0.35rem 0;
 	font-weight: 700;
 	letter-spacing: 0.01em;
-	color: #f8fafc;
+	color: var(--admin-nav-text-strong);
 }
 
-.nav-group .collapsible__content,
-.nav-group .collapsible__wrapper,
 .nav-group ul {
-	display: grid;
-	gap: 0.3rem;
+	display: block;
+	gap: 0;
 }
 
 .nav-group a,
 .nav-group [role="link"] {
 	display: block;
-	padding: 0.72rem 0.85rem;
-	border-radius: 14px;
+	padding: 0.7rem 0.85rem;
+	border-radius: 10px;
 	text-decoration: none;
 	background: transparent;
-	transition: background-color 160ms ease, transform 160ms ease, color 160ms ease, box-shadow 160ms ease;
+	transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+	border: 1px solid transparent;
 }
 
 .nav-group a:hover,
 .nav-group a:focus-visible,
 .nav-group a.active,
 .nav-group a[aria-current="page"] {
-	background: linear-gradient(135deg, rgba(45, 212, 191, 0.18), rgba(59, 130, 246, 0.18));
-	color: white;
-	transform: translateX(2px);
-	box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.22);
+	background: rgba(255, 255, 255, 0.06);
+	color: var(--admin-nav-text-strong);
+	border-color: rgba(255, 255, 255, 0.08);
 }
 
 .dashboard,
-.list-controls,
 .collection-list,
 .document-fields__sidebar,
-.render-fields > .field-type,
-.upload,
 .rich-text-lexical,
-.doc-controls {
-	background: var(--admin-panel-bg);
-	border: 1px solid var(--admin-panel-border);
-	box-shadow: var(--admin-panel-shadow);
-	backdrop-filter: blur(14px);
-	border-radius: 20px;
+.doc-controls,
+.list-controls,
+.collection-edit,
+.edit-depth__wrap,
+.doc-field-rows {
+	background: var(--admin-surface);
+	border: 1px solid var(--admin-border);
+	box-shadow: var(--admin-shadow);
+	border-radius: 16px;
 }
 
 .btn--style-primary,
@@ -139,10 +151,8 @@ button[type="submit"] {
 input,
 textarea,
 select,
-.rs__control,
-button,
-.btn {
-	border-radius: 14px !important;
+.rs__control {
+	border-radius: 12px !important;
 }
 
 .field-label,
@@ -171,6 +181,32 @@ button,
 	font-weight: 800;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
+}
+
+.template-default .field-type,
+.template-default .upload-field,
+.template-default .relationship,
+.template-default .select-field,
+.template-default .array-field,
+.template-default .collapsible {
+	min-width: 0;
+}
+
+.template-default .relationship .rs__menu,
+.template-default .select-field .rs__menu {
+	z-index: 40;
+}
+
+.template-default .field-type.upload {
+	padding: 1rem;
+	background: var(--admin-surface-soft);
+	border: 1px solid var(--admin-border);
+	border-radius: 14px;
+}
+
+.template-default .field-type.upload .btn,
+.template-default .field-type.upload button {
+	border-radius: 999px !important;
 }
 
 @media (max-width: 1024px) {
