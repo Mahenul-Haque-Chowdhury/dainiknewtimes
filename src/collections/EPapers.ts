@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-import { isAdminOrEditor } from "@/lib/access";
+import { canManageEPaper } from "@/lib/access";
 import { logInfo } from "@/lib/logger";
 
 export const EPapers: CollectionConfig = {
@@ -12,9 +12,9 @@ export const EPapers: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: isAdminOrEditor,
-    update: isAdminOrEditor,
-    delete: isAdminOrEditor,
+    create: canManageEPaper,
+    update: canManageEPaper,
+    delete: canManageEPaper,
   },
   fields: [
     {

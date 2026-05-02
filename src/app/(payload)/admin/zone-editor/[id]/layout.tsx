@@ -2,6 +2,7 @@ import React from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { canManageEPaper } from "@/lib/access";
 import { getPayloadClient } from "@/lib/payload-helpers";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +28,6 @@ export default async function AdminZoneEditorLayout({ children, params }: Layout
   const payload = await getPayloadClient();
   const requestHeaders = new Headers(await headers());
   const { user } = await payload.auth({ headers: requestHeaders });
-  const role = (user as { role?: string } | null)?.role;
   const { id } = await params;
   const adminRoute = payload.config.routes.admin;
   const loginRoute = payload.config.admin.routes.login;
@@ -39,7 +39,7 @@ export default async function AdminZoneEditorLayout({ children, params }: Layout
     redirect(`${loginURL}?redirect=${encodeURIComponent(destination)}`);
   }
 
-  if (role !== "admin" && role !== "editor") {
+  if (!canManageEPaper({ req: { user } } as never)) {
     redirect(joinAdminPath(adminRoute, unauthorizedRoute));
   }
 

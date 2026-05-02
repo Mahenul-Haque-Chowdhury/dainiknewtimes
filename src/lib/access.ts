@@ -24,6 +24,15 @@ export const isAdminOrEditor: Access = ({ req: { user } }) => {
   return currentUser?.role === "admin" || currentUser?.role === "editor";
 };
 
+export const canManageEPaper: Access = ({ req: { user } }) => {
+  const currentUser = getUser(user);
+  return (
+    currentUser?.role === "admin" ||
+    currentUser?.role === "editor" ||
+    currentUser?.role === "reporter"
+  );
+};
+
 export const canCreateArticle: Access = ({ req: { user } }) => {
   const currentUser = getUser(user);
   if (!currentUser) return false;

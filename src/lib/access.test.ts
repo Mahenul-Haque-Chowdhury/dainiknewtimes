@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  canManageEPaper,
   canCreateArticle,
   canUpdateDeleteArticle,
   isAdmin,
@@ -23,6 +24,12 @@ describe("access helpers", () => {
     expect(runAccess(isAdminOrEditor, { role: "admin" })).toBe(true);
     expect(runAccess(isAdminOrEditor, { role: "editor" })).toBe(true);
     expect(runAccess(isAdminOrEditor, { role: "reporter" })).toBe(false);
+  });
+
+  it("allows reporter to manage e-paper editor access", () => {
+    expect(runAccess(canManageEPaper, { role: "admin" })).toBe(true);
+    expect(runAccess(canManageEPaper, { role: "editor" })).toBe(true);
+    expect(runAccess(canManageEPaper, { role: "reporter" })).toBe(true);
   });
 
   it("allows reporter article creation but constrains updates to own records", () => {
