@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { canManageEPaper } from "@/lib/access";
 import { getPayloadClient } from "@/lib/payload-helpers";
 
+import "../../../../globals.css";
+
 export const dynamic = "force-dynamic";
 
 type LayoutProps = {
