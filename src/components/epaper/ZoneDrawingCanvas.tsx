@@ -2,8 +2,6 @@
 
 import React, { useRef, useState, useCallback, useEffect } from "react";
 
-import styles from "./ZoneDrawingCanvas.module.css";
-
 export interface Zone {
   id: string;
   x: number; // percentage 0-100
@@ -233,7 +231,7 @@ export default function ZoneDrawingCanvas({
   return (
     <div
       ref={containerRef}
-      className={styles.container}
+      className="relative select-none overflow-hidden bg-gray-200"
       style={{ cursor: isDrawing ? "crosshair" : "default" }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
@@ -244,13 +242,13 @@ export default function ZoneDrawingCanvas({
       <img
         src={imageUrl}
         alt="Newspaper page"
-        className={styles.pageImage}
+        className="w-full h-auto block"
         onLoad={() => setImageLoaded(true)}
         draggable={false}
       />
 
       {!imageLoaded && (
-        <div className={styles.loadingOverlay}>
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-gray-400">
           ছবি লোড হচ্ছে...
         </div>
       )}
@@ -264,7 +262,7 @@ export default function ZoneDrawingCanvas({
           <div
             key={zone.id}
             data-zone-id={zone.id}
-            className={`${styles.zone} ${isSelected ? styles.zoneSelected : ""}`}
+            className="absolute group"
             style={{
               left: `${zone.x}%`,
               top: `${zone.y}%`,
@@ -283,7 +281,7 @@ export default function ZoneDrawingCanvas({
           >
             {/* Zone label */}
             <div
-              className={styles.zoneLabel}
+              className="absolute top-0 left-0 max-w-full truncate px-2 py-1 text-xs font-bold leading-tight text-white shadow-sm pointer-events-none md:text-sm"
               style={{ backgroundColor: color }}
             >
               {zone.title || `জোন ${idx + 1}`}
@@ -291,7 +289,7 @@ export default function ZoneDrawingCanvas({
 
             {/* Zone number badge */}
             <div
-              className={styles.zoneBadge}
+              className="absolute top-0 right-0 flex h-7 min-w-9 items-center justify-center rounded-bl px-1.5 text-sm font-bold text-white shadow-sm pointer-events-none md:h-8 md:min-w-10 md:px-2 md:text-base"
               style={{ backgroundColor: color }}
             >
               {idx + 1}
@@ -302,7 +300,7 @@ export default function ZoneDrawingCanvas({
               resizeHandles.map((handle) => (
                 <div
                   key={handle}
-                  className={styles.resizeHandle}
+                  className="absolute w-2 h-2 bg-white rounded-sm"
                   style={{
                     ...handlePositionMap[handle],
                     border: `2px solid ${color}`,
@@ -319,7 +317,7 @@ export default function ZoneDrawingCanvas({
       {/* Drawing preview rectangle */}
       {previewRect && (
         <div
-          className={styles.previewRect}
+          className="absolute pointer-events-none"
           style={{
             left: `${previewRect.x}%`,
             top: `${previewRect.y}%`,

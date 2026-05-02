@@ -5,8 +5,6 @@ import Link from "next/link";
 import { formatBengaliDate, toBengaliDigits } from "@/lib/bengali-date";
 import ZoneDrawingCanvas, { type Zone } from "@/components/epaper/ZoneDrawingCanvas";
 
-import styles from "./ZoneEditorPage.module.css";
-
 interface ClipData {
   id?: string;
   title?: string;
@@ -672,17 +670,17 @@ export default function ZoneEditorPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className={styles.centerState}>
-        <div className={styles.loadingText}>ই-পেপার ডেটা লোড হচ্ছে...</div>
+      <div className="max-w-7xl mx-auto p-8 text-center">
+        <div className="animate-pulse text-lg text-gray-500">ই-পেপার ডেটা লোড হচ্ছে...</div>
       </div>
     );
   }
 
   if (!epaper) {
     return (
-      <div className={styles.centerState}>
-        <h1 className={styles.errorTitle}>ই-পেপার পাওয়া যায়নি</h1>
-        <Link href="/admin" className={styles.backLink}>
+      <div className="max-w-7xl mx-auto p-8 text-center">
+        <h1 className="text-xl font-bold text-red-600 mb-4">ই-পেপার পাওয়া যায়নি</h1>
+        <Link href="/admin" className="text-blue-700 hover:underline">
           অ্যাডমিনে ফিরে যান
         </Link>
       </div>
@@ -690,16 +688,16 @@ export default function ZoneEditorPage({ params }: { params: Promise<{ id: strin
   }
 
   return (
-    <div className={styles.root}>
-      <div className={styles.headerRow}>
+    <div className="mx-auto max-w-[1800px] px-4 py-6">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className={styles.pageTitle}>জোন এডিটর — সংবাদ চিহ্নিত করুন</h1>
-          <p className={styles.pageMeta}>তারিখ: {epaper.issueDate?.split("T")[0]} | পৃষ্ঠা: {(epaper.pages || []).length}</p>
+          <h1 className="text-xl font-bold text-slate-900">জোন এডিটর — সংবাদ চিহ্নিত করুন</h1>
+          <p className="text-sm text-gray-500">তারিখ: {epaper.issueDate?.split("T")[0]} | পৃষ্ঠা: {(epaper.pages || []).length}</p>
         </div>
 
-        <div className={styles.headerActions}>
+        <div className="flex items-center gap-3">
           {saveMessage && (
-            <span className={`${styles.saveMessage} ${saveMessage.includes("ব্যর্থ") ? styles.errorMessage : styles.successMessage}`}>
+            <span className={`text-sm font-medium ${saveMessage.includes("ব্যর্থ") ? "text-red-600" : "text-green-600"}`}>
               {saveMessage}
             </span>
           )}
@@ -707,29 +705,29 @@ export default function ZoneEditorPage({ params }: { params: Promise<{ id: strin
           <button
             onClick={handleSave}
             disabled={saving}
-            className={`${styles.button} ${styles.primaryButton}`}
+            className="rounded-lg bg-green-600 px-5 py-2 font-medium text-white transition hover:bg-green-700 disabled:opacity-50"
           >
             {saving ? "সেভ হচ্ছে..." : "সেভ করুন"}
           </button>
 
-          <Link href="/admin/collections/epapers" className={`${styles.button} ${styles.secondaryButton}`}>
+          <Link href="/admin/collections/epapers" className="rounded-lg bg-gray-600 px-4 py-2 text-sm text-white transition hover:bg-gray-700">
             অ্যাডমিনে ফেরত
           </Link>
         </div>
       </div>
 
-      <div className={styles.instructionBanner}>
-        <div className={styles.instructionList}>
-          <span className={styles.instructionChip}>১. + দিয়ে নতুন সংবাদ যোগ করুন</span>
-          <span className={styles.instructionChip}>২. পাতায় জোন আঁকুন বা সরান</span>
-          <span className={styles.instructionChip}>৩. সংযুক্ত অংশ থাকলে লিংক করুন</span>
-          <span className={styles.instructionChip}>৪. হেডার অংশ চাইলে আলাদা করে সেট করুন</span>
-          <span className={styles.instructionChip}>৫. ফুটার অংশও একইভাবে আলাদা করে সেট করুন</span>
-          <span className={styles.progressChip}>{pageProgress}</span>
+      <div className="mb-4 rounded-2xl border border-slate-200 bg-[linear-gradient(135deg,#f8fafc,#eef6ff)] px-4 py-4 text-xs text-slate-700 shadow-sm">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="rounded-full bg-white px-2.5 py-1 font-medium text-slate-800 shadow-sm">১. + দিয়ে নতুন সংবাদ যোগ করুন</span>
+          <span className="rounded-full bg-white px-2.5 py-1 font-medium text-slate-800 shadow-sm">২. পাতায় জোন আঁকুন বা সরান</span>
+          <span className="rounded-full bg-white px-2.5 py-1 font-medium text-slate-800 shadow-sm">৩. সংযুক্ত অংশ থাকলে লিংক করুন</span>
+          <span className="rounded-full bg-white px-2.5 py-1 font-medium text-slate-800 shadow-sm">৪. হেডার অংশ চাইলে আলাদা করে সেট করুন</span>
+          <span className="rounded-full bg-white px-2.5 py-1 font-medium text-slate-800 shadow-sm">৫. ফুটার অংশও একইভাবে আলাদা করে সেট করুন</span>
+          <span className="ml-auto rounded-full bg-slate-900 px-2.5 py-1 font-medium text-white">{pageProgress}</span>
         </div>
       </div>
 
-      <div className={styles.pageTabs}>
+      <div className="mb-4 flex gap-2 overflow-x-auto pb-2">
         {(epaper.pages || []).map((page, idx) => {
           const count = idx === selectedPageIndex ? zones.length : (allPageZones[idx] || []).length;
           const isContinuationTarget = pendingConnection ? idx !== pendingConnection.sourcePageIndex : false;
@@ -738,119 +736,125 @@ export default function ZoneEditorPage({ params }: { params: Promise<{ id: strin
             <button
               key={idx}
               onClick={() => switchToPage(idx)}
-              className={`${styles.pageTab} ${idx === selectedPageIndex ? styles.pageTabActive : isContinuationTarget ? styles.pageTabContinuation : styles.pageTabDefault}`}
+              className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition ${
+                idx === selectedPageIndex
+                  ? "bg-slate-900 text-white"
+                  : isContinuationTarget
+                    ? "border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100"
+                    : "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+              }`}
             >
               পাতা {page.pageNumber}
-              {count > 0 && <span className={styles.pageTabCount}>{count}</span>}
+              {count > 0 && <span className="ml-1.5 rounded bg-white/20 px-1.5 py-0.5 text-xs">{count}</span>}
             </button>
           );
         })}
       </div>
 
-      <div className={styles.workspace}>
-        <div className={styles.canvasColumn}>
-          <div className={styles.canvasCard}>
-            <div className={styles.canvasToolbar}>
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+        <div className="xl:col-span-8">
+          <div className="overflow-hidden rounded-lg bg-white shadow-lg">
+            <div className="flex flex-wrap items-center gap-4 border-b bg-[linear-gradient(90deg,#f8fafc,#ffffff)] px-4 py-3 text-xs text-gray-500">
               <span>ড্র্যাগ করে জোন আঁকুন</span>
               <span>ক্লিক করে সংবাদ সিলেক্ট করুন</span>
               <span>ধারাবাহিক অংশ থাকলে সংযুক্ত করুন</span>
-              <span className={styles.canvasBadge}>জোন: {zones.length}</span>
+              <span className="ml-auto rounded-full bg-gray-100 px-2 py-1 text-gray-600">জোন: {zones.length}</span>
             </div>
 
             {currentImageUrl ? (
               <ZoneDrawingCanvas imageUrl={currentImageUrl} zones={zones} onChange={handleZonesChange} selectedZoneId={selectedZoneId} onSelectZone={handleZonePick} />
             ) : (
-              <div className={styles.emptyCanvas}>এই পাতার জন্য কোনো ছবি আপলোড করা হয়নি</div>
+              <div className="flex aspect-[3/4] items-center justify-center bg-gray-100 text-gray-400">এই পাতার জন্য কোনো ছবি আপলোড করা হয়নি</div>
             )}
           </div>
         </div>
 
-        <div className={styles.sidebar}>
-          <div className={styles.panel}>
-            <div className={`${styles.panelHeader} ${styles.panelHeaderBlue}`}>
-              <h3 className={styles.panelTitle}>পত্রিকার হেডার</h3>
-              <p className={styles.panelDescription}>এখান থেকে আলাদা করে masthead/header crop সেট করুন। এটি সব article page-এর উপরে দেখানো হবে।</p>
+        <div className="space-y-4 xl:col-span-4">
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-100 bg-[linear-gradient(135deg,#eef6ff,#ffffff)] px-4 py-4">
+              <h3 className="text-sm font-bold text-slate-900">পত্রিকার হেডার</h3>
+              <p className="text-xs text-gray-500">এখান থেকে আলাদা করে masthead/header crop সেট করুন। এটি সব article page-এর উপরে দেখানো হবে।</p>
             </div>
-            <div className={styles.panelBody}>
+            <div className="space-y-3 p-4">
               {headerCropUrl ? (
-                <div className={styles.previewBox}>
-                  <img src={headerCropUrl} alt="Newspaper header preview" className={styles.previewImage} />
-                  <div className={styles.previewCaption}>পাতা {headerZone?.pageNumber} থেকে header crop সিলেক্ট করা হয়েছে</div>
+                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                  <img src={headerCropUrl} alt="Newspaper header preview" className="block h-auto w-full" />
+                  <div className="border-t border-slate-200 px-3 py-2 text-[11px] text-slate-600">পাতা {headerZone?.pageNumber} থেকে header crop সিলেক্ট করা হয়েছে</div>
                 </div>
               ) : (
-                <div className={styles.placeholderBox}>এখনো newspaper header set করা হয়নি। ক্যানভাসে zone select করে নিচের button ব্যবহার করুন।</div>
+                <div className="rounded-2xl border border-dashed border-slate-200 px-3 py-5 text-center text-xs text-slate-400">এখনো newspaper header set করা হয়নি। ক্যানভাসে zone select করে নিচের button ব্যবহার করুন।</div>
               )}
 
-              <div className={styles.actionRow}>
-                <button type="button" onClick={applySelectedZoneAsHeader} disabled={!selectedZone} className={`${styles.button} ${styles.darkButton}`}>selected zone-কে header করুন</button>
-                <button type="button" onClick={clearHeaderZone} disabled={!headerZone} className={`${styles.button} ${styles.outlineButton}`}>header clear করুন</button>
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={applySelectedZoneAsHeader} disabled={!selectedZone} className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">selected zone-কে header করুন</button>
+                <button type="button" onClick={clearHeaderZone} disabled={!headerZone} className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">header clear করুন</button>
               </div>
             </div>
           </div>
 
-          <div className={styles.panel}>
-            <div className={`${styles.panelHeader} ${styles.panelHeaderWarm}`}>
-              <h3 className={styles.panelTitle}>পত্রিকার ফুটার</h3>
-              <p className={styles.panelDescription}>নিচের strip/footer অংশ আলাদা করে সেট করুন। এটি সব article page-এর নিচে দেখানো হবে।</p>
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-100 bg-[linear-gradient(135deg,#fff7f0,#ffffff)] px-4 py-4">
+              <h3 className="text-sm font-bold text-slate-900">পত্রিকার ফুটার</h3>
+              <p className="text-xs text-gray-500">নিচের strip/footer অংশ আলাদা করে সেট করুন। এটি সব article page-এর নিচে দেখানো হবে।</p>
             </div>
-            <div className={styles.panelBody}>
+            <div className="space-y-3 p-4">
               {footerCropUrl ? (
-                <div className={styles.previewBox}>
-                  <img src={footerCropUrl} alt="Newspaper footer preview" className={styles.previewImage} />
-                  <div className={styles.previewCaption}>পাতা {footerZone?.pageNumber} থেকে footer crop সিলেক্ট করা হয়েছে</div>
+                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                  <img src={footerCropUrl} alt="Newspaper footer preview" className="block h-auto w-full" />
+                  <div className="border-t border-slate-200 px-3 py-2 text-[11px] text-slate-600">পাতা {footerZone?.pageNumber} থেকে footer crop সিলেক্ট করা হয়েছে</div>
                 </div>
               ) : (
-                <div className={styles.placeholderBox}>এখনো newspaper footer set করা হয়নি। ক্যানভাসে zone select করে নিচের button ব্যবহার করুন।</div>
+                <div className="rounded-2xl border border-dashed border-slate-200 px-3 py-5 text-center text-xs text-slate-400">এখনো newspaper footer set করা হয়নি। ক্যানভাসে zone select করে নিচের button ব্যবহার করুন।</div>
               )}
 
-              <div className={styles.actionRow}>
-                <button type="button" onClick={applySelectedZoneAsFooter} disabled={!selectedZone} className={`${styles.button} ${styles.darkButton}`}>selected zone-কে footer করুন</button>
-                <button type="button" onClick={clearFooterZone} disabled={!footerZone} className={`${styles.button} ${styles.outlineButton}`}>footer clear করুন</button>
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={applySelectedZoneAsFooter} disabled={!selectedZone} className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">selected zone-কে footer করুন</button>
+                <button type="button" onClick={clearFooterZone} disabled={!footerZone} className="rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">footer clear করুন</button>
               </div>
             </div>
           </div>
 
-          <div className={styles.panel}>
-            <div className={`${styles.panelHeader} ${styles.panelHeaderRose}`}>
-              <h3 className={styles.panelTitle}>আর্টিকেলসমূহ</h3>
-              <p className={styles.panelDescription}>লিস্ট থেকেই zone যোগ করুন, সিলেক্ট করুন, আর selected row থেকেই quick action নিন</p>
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-100 bg-[linear-gradient(135deg,#fff7f7,#ffffff)] px-4 py-4">
+              <h3 className="text-sm font-bold text-slate-900">আর্টিকেলসমূহ</h3>
+              <p className="text-xs text-gray-500">লিস্ট থেকেই zone যোগ করুন, সিলেক্ট করুন, আর selected row থেকেই quick action নিন</p>
             </div>
 
-            <div className={styles.panelBody}>
-              <div className={styles.articlesScroller}>
-                <button type="button" onClick={createNewArticle} className={styles.addArticleButton}>
+            <div className="p-4">
+              <div className="max-h-84 space-y-2 overflow-y-auto pr-1">
+                <button type="button" onClick={createNewArticle} className="flex w-full items-center justify-between rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-3 py-3 text-left transition hover:border-red-500 hover:bg-red-50">
                   <div>
-                    <div className={styles.addArticleTitle}>নতুন Zone যোগ করুন</div>
-                    <div className={styles.addArticleText}>লিস্টে সঙ্গে সঙ্গে নতুন নাম আর জোন তৈরি হবে</div>
+                    <div className="text-sm font-semibold text-slate-800">নতুন Zone যোগ করুন</div>
+                    <div className="mt-1 text-[11px] text-slate-500">লিস্টে সঙ্গে সঙ্গে নতুন নাম আর জোন তৈরি হবে</div>
                   </div>
-                  <span className={styles.addArticleIcon}>+</span>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-lg font-semibold text-white shadow-sm">+</span>
                 </button>
 
                 {articles.length > 0 ? (
-                  <div className={styles.articleList}>
+                  <div className="space-y-2">
                     {articles.map((article, index) => {
                       const isActive = article.zoneId === selectedZoneId || zones.some((zone) => zone.articleGroup === article.group && zone.id === selectedZoneId);
 
                       return (
-                        <div key={article.group} className={`${styles.articleCard} ${isActive ? styles.articleCardActive : ""}`}>
-                          <div className={styles.articleCardInner}>
-                            <button type="button" onClick={() => handleZonePick(article.zoneId)} className={styles.articleMainButton}>
-                              <span className={`${styles.articleIndex} ${isActive ? styles.articleIndexActive : ""}`}>{index + 1}</span>
-                              <div className={styles.articleMainText}>
-                                <div className={`${styles.articleTitle} ${isActive ? styles.articleTitleActive : ""}`}>{article.title}</div>
-                                <div className={styles.articleMeta}>
+                        <div key={article.group} className={`relative rounded-2xl border transition ${isActive ? "border-red-500 bg-red-50 ring-2 ring-red-100" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}>
+                          <div className="flex items-start gap-3 px-3 py-3">
+                            <button type="button" onClick={() => handleZonePick(article.zoneId)} className="flex min-w-0 flex-1 items-start gap-3 text-left">
+                              <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${isActive ? "bg-red-600 text-white" : "bg-slate-100 text-slate-600"}`}>{index + 1}</span>
+                              <div className="min-w-0 flex-1">
+                                <div className={`truncate text-sm font-semibold ${isActive ? "text-red-600" : "text-slate-800"}`}>{article.title}</div>
+                                <div className="mt-1 flex flex-wrap gap-2 text-[11px] text-slate-500">
                                   <span>{article.count} অংশ</span>
                                   {article.linkedPages.length > 0 && <span>পৃষ্ঠা {article.linkedPages.join(", ")}</span>}
-                                  {article.missingTitle && <span className={styles.warningText}>নাম দিন</span>}
+                                  {article.missingTitle && <span className="text-amber-700">নাম দিন</span>}
                                 </div>
                               </div>
                             </button>
 
                             {isActive && (
-                              <div className={styles.articleActions}>
-                                <button type="button" onClick={(event) => { event.stopPropagation(); handleZonePick(article.zoneId); startConnectionMode(); }} className={`${styles.iconButton} ${styles.iconButtonPrimary}`} aria-label="Continue on another page" title="Continue on another page">+</button>
-                                <button type="button" onClick={(event) => { event.stopPropagation(); duplicateSelectedArticle(); }} className={styles.iconButton} aria-label="Duplicate selected zone" title="Duplicate zone">C</button>
-                                <button type="button" onClick={(event) => { event.stopPropagation(); deleteSelectedZone(); }} className={styles.deleteButton} aria-label="Delete selected zone" title="Delete zone">×</button>
+                              <div className="flex shrink-0 items-center gap-1 self-center">
+                                <button type="button" onClick={(event) => { event.stopPropagation(); handleZonePick(article.zoneId); startConnectionMode(); }} className="flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-base font-semibold text-white shadow-sm transition hover:bg-red-700" aria-label="Continue on another page" title="Continue on another page">+</button>
+                                <button type="button" onClick={(event) => { event.stopPropagation(); duplicateSelectedArticle(); }} className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-xs font-semibold text-slate-600 transition hover:bg-slate-50" aria-label="Duplicate selected zone" title="Duplicate zone">C</button>
+                                <button type="button" onClick={(event) => { event.stopPropagation(); deleteSelectedZone(); }} className="absolute -right-2 -top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-red-200 bg-white text-red-600 shadow-sm transition hover:bg-red-50" aria-label="Delete selected zone" title="Delete zone">×</button>
                               </div>
                             )}
                           </div>
@@ -859,84 +863,82 @@ export default function ZoneEditorPage({ params }: { params: Promise<{ id: strin
                     })}
                   </div>
                 ) : (
-                  <p className={styles.placeholderBox}>এখনো কোনো article নেই। উপরের add row থেকে শুরু করুন।</p>
+                  <p className="rounded-2xl border border-dashed border-slate-200 px-3 py-5 text-center text-xs text-slate-400">এখনো কোনো article নেই। উপরের add row থেকে শুরু করুন।</p>
                 )}
               </div>
             </div>
           </div>
 
-          <div className={styles.panel}>
-            <div className={styles.selectedPanelHeader}>
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="mb-3 flex items-center justify-between gap-3">
               <div>
-                <h3 className={styles.panelTitle}>নির্বাচিত আর্টিকেল</h3>
-                <p className={styles.panelDescription}>নাম, group, slug এবং parts এখান থেকে ম্যানেজ করুন</p>
+                <h3 className="text-sm font-bold text-slate-900">নির্বাচিত আর্টিকেল</h3>
+                <p className="text-xs text-gray-500">নাম, group, slug এবং parts এখান থেকে ম্যানেজ করুন</p>
               </div>
             </div>
 
-            <div className={styles.panelBody}>
-              {pendingConnection && <div className={`${styles.callout} ${styles.calloutWarning}`}>Continuation mode চালু আছে। Source: {pendingConnection.title || "Selected zone"} (পৃষ্ঠা {epaper.pages?.[pendingConnection.sourcePageIndex]?.pageNumber}). এখন অন্য পাতায় গিয়ে target zone সিলেক্ট করুন।</div>}
+            {pendingConnection && <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">Continuation mode চালু আছে। Source: {pendingConnection.title || "Selected zone"} (পৃষ্ঠা {epaper.pages?.[pendingConnection.sourcePageIndex]?.pageNumber}). এখন অন্য পাতায় গিয়ে target zone সিলেক্ট করুন।</div>}
 
-              {lastConnection && <div className={`${styles.callout} ${styles.calloutSuccess}`}>Connected: {lastConnection.title || "নির্বাচিত সংবাদ"} | পৃষ্ঠা {lastConnection.sourcePageNumber} থেকে পৃষ্ঠা {lastConnection.targetPageNumber} | গ্রুপ: {lastConnection.group}</div>}
+            {lastConnection && <div className="mb-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800">Connected: {lastConnection.title || "নির্বাচিত সংবাদ"} | পৃষ্ঠা {lastConnection.sourcePageNumber} থেকে পৃষ্ঠা {lastConnection.targetPageNumber} | গ্রুপ: {lastConnection.group}</div>}
 
-              {selectedZone ? (
-                <div className={styles.selectedForm}>
+            {selectedZone ? (
+              <div className="space-y-3">
                 <div>
-                  <label className={styles.inputLabel}>সংবাদের শিরোনাম</label>
-                  <input ref={titleInputRef} type="text" value={selectedZone.title} onChange={(e) => updateZone(selectedZone.id, { title: e.target.value })} className={styles.textInput} />
+                  <label className="mb-1 block text-xs font-medium text-gray-600">সংবাদের শিরোনাম</label>
+                  <input ref={titleInputRef} type="text" value={selectedZone.title} onChange={(e) => updateZone(selectedZone.id, { title: e.target.value })} className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900" />
                 </div>
 
                 <div>
-                  <label className={styles.inputLabel}>সংযোগ গ্রুপ</label>
-                  <input type="text" value={selectedZone.articleGroup} onChange={(e) => updateZone(selectedZone.id, { articleGroup: e.target.value })} className={styles.textInput} placeholder="e.g. story-1" />
+                  <label className="mb-1 block text-xs font-medium text-gray-600">সংযোগ গ্রুপ</label>
+                  <input type="text" value={selectedZone.articleGroup} onChange={(e) => updateZone(selectedZone.id, { articleGroup: e.target.value })} className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900" placeholder="e.g. story-1" />
                 </div>
 
                 <div>
-                  <label className={styles.inputLabel}>অনলাইন আর্টিকেল স্লাগ (ঐচ্ছিক)</label>
-                  <input type="text" value={selectedZone.linkedArticleSlug} onChange={(e) => updateZone(selectedZone.id, { linkedArticleSlug: e.target.value })} className={styles.textInput} placeholder="post-slug" />
+                  <label className="mb-1 block text-xs font-medium text-gray-600">অনলাইন আর্টিকেল স্লাগ (ঐচ্ছিক)</label>
+                  <input type="text" value={selectedZone.linkedArticleSlug} onChange={(e) => updateZone(selectedZone.id, { linkedArticleSlug: e.target.value })} className="w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-900" placeholder="post-slug" />
                 </div>
 
-                <div className={styles.coordinatesGrid}>
+                <div className="grid grid-cols-4 gap-1 rounded-lg bg-gray-50 p-2 text-center text-xs text-gray-500">
                   <div>X: {selectedZone.x.toFixed(1)}%</div>
                   <div>Y: {selectedZone.y.toFixed(1)}%</div>
                   <div>W: {selectedZone.w.toFixed(1)}%</div>
                   <div>H: {selectedZone.h.toFixed(1)}%</div>
                 </div>
 
-                <div className={styles.actionRow}>
-                  <button onClick={startConnectionMode} className={`${styles.button} ${styles.darkButton}`}>অন্য পাতায় continuation দিন</button>
-                  <button onClick={disconnectSelectedZone} className={`${styles.button} ${styles.outlineButton}`} disabled={getGroupZoneCount(selectedZone.articleGroup) <= 1}>সংযোগ বিচ্ছিন্ন করুন</button>
+                <div className="flex flex-wrap gap-2">
+                  <button onClick={startConnectionMode} className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white transition hover:opacity-90">অন্য পাতায় continuation দিন</button>
+                  <button onClick={disconnectSelectedZone} className="rounded-lg border border-gray-300 px-3 py-2 text-xs font-medium text-gray-700 transition hover:bg-gray-50" disabled={getGroupZoneCount(selectedZone.articleGroup) <= 1}>সংযোগ বিচ্ছিন্ন করুন</button>
                 </div>
 
-                {selectedZone.articleGroup && <div className={styles.connectionInfo}>সংযুক্ত জোন: {getGroupZoneCount(selectedZone.articleGroup)} টি | সংযুক্ত পাতা: {getLinkedPages(selectedZone.articleGroup).join(", ") || "নেই"}</div>}
+                {selectedZone.articleGroup && <div className="text-xs text-gray-500">সংযুক্ত জোন: {getGroupZoneCount(selectedZone.articleGroup)} টি | সংযুক্ত পাতা: {getLinkedPages(selectedZone.articleGroup).join(", ") || "নেই"}</div>}
 
-                <div className={styles.partsPanel}>
-                  <div className={styles.partsHeader}>
-                    <h4 className={styles.partsTitle}>এই আর্টিকেলের অংশসমূহ</h4>
-                    <span className={styles.partsCount}>{selectedArticleZones.length} টি</span>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="mb-2 flex items-center justify-between">
+                    <h4 className="text-xs font-semibold text-slate-700">এই আর্টিকেলের অংশসমূহ</h4>
+                    <span className="text-[11px] text-slate-500">{selectedArticleZones.length} টি</span>
                   </div>
-                  <div className={styles.partsScroller}>
+                  <div className="max-h-52 space-y-2 overflow-y-auto pr-1">
                     {selectedArticleZones.map((zone, index) => {
                       const isActivePart = zone.id === selectedZoneId;
 
                       return (
-                        <button key={zone.id} onClick={() => handleZonePick(zone.id)} className={`${styles.partButton} ${isActivePart ? styles.partButtonActive : ""}`}>
-                          <div className={styles.partButtonRow}>
-                            <div className={styles.partText}>
-                              <div className={`${styles.partLabel} ${isActivePart ? styles.partLabelActive : ""}`}>{buildAutoZoneMeta(epaper?.issueDate, selectedPageNumber, index).partLabel}</div>
-                              <div className={styles.partMeta}>X: {zone.x.toFixed(1)}% | Y: {zone.y.toFixed(1)}% | W: {zone.w.toFixed(1)}% | H: {zone.h.toFixed(1)}%</div>
+                        <button key={zone.id} onClick={() => handleZonePick(zone.id)} className={`w-full rounded-xl border px-3 py-2 text-left transition ${isActivePart ? "border-red-500 bg-white shadow-sm" : "border-transparent bg-white/70 hover:border-slate-200"}`}>
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className={`truncate text-xs font-semibold ${isActivePart ? "text-red-600" : "text-slate-700"}`}>{buildAutoZoneMeta(epaper?.issueDate, selectedPageNumber, index).partLabel}</div>
+                              <div className="mt-0.5 text-[11px] text-slate-500">X: {zone.x.toFixed(1)}% | Y: {zone.y.toFixed(1)}% | W: {zone.w.toFixed(1)}% | H: {zone.h.toFixed(1)}%</div>
                             </div>
-                            <span className={`${styles.partDot} ${isActivePart ? styles.partDotActive : ""}`} />
+                            <span className={`h-2.5 w-2.5 rounded-full ${isActivePart ? "bg-red-600" : "bg-slate-300"}`} />
                           </div>
                         </button>
                       );
                     })}
                   </div>
                 </div>
-                </div>
+              </div>
               ) : (
-                <p className={styles.emptySelection}>একটি জোন সিলেক্ট করুন বা নতুন জোন আঁকুন</p>
+                <p className="py-4 text-center text-sm text-gray-400">একটি জোন সিলেক্ট করুন বা নতুন জোন আঁকুন</p>
               )}
-            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { getPayload } from "payload";
-import { ORDERED_CATEGORY_CONFIG } from "@/lib/category-config";
+import { syncConfiguredCategories } from "@/lib/category-sync";
 import config from "../payload.config";
 
 async function seed() {
@@ -7,29 +7,8 @@ async function seed() {
   const bootstrapAdminPassword = process.env.SEED_ADMIN_PASSWORD;
 
   console.log("🌱 Seeding categories...");
-
-  for (const cat of ORDERED_CATEGORY_CONFIG) {
-    const existing = await payload.find({
-      collection: "categories",
-      where: { slug: { equals: cat.slug } },
-      limit: 1,
-    });
-
-    if (existing.docs.length === 0) {
-      await payload.create({
-        collection: "categories",
-        data: cat,
-      });
-      console.log(`  ✓ Created: ${cat.name} (${cat.slug})`);
-    } else {
-      await payload.update({
-        collection: "categories",
-        id: existing.docs[0].id,
-        data: cat,
-      });
-      console.log(`  ↺ Synced: ${cat.name} (${cat.slug})`);
-    }
-  }
+  await syncConfiguredCategories(payload);
+  console.log("  ✓ Synced approved category strip");
 
   // Create admin user if none exists
   const users = await payload.find({ collection: "users", limit: 1 });

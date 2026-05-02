@@ -20,6 +20,7 @@ import { EPapers } from "./collections/EPapers";
 import { SiteSettings } from "./globals/SiteSettings";
 import { BreakingNews } from "./globals/BreakingNews";
 import { Headlines } from "./globals/Headlines";
+import { syncConfiguredCategories } from "./lib/category-sync";
 import { serverEnv } from "./lib/env";
 
 const filename = fileURLToPath(import.meta.url);
@@ -64,5 +65,8 @@ export default buildConfig({
       connectionString: serverEnv.DATABASE_URI,
     },
   }),
+  onInit: async (payload) => {
+    await syncConfiguredCategories(payload);
+  },
   sharp,
 });

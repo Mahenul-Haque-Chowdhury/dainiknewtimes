@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import BottomTicker from "@/components/layout/BottomTicker";
 import ScrollToTop from "@/components/ui/ScrollToTop";
 import { getAllCategories, getBreakingNews } from "@/lib/payload-helpers";
+import { ORDERED_CATEGORY_CONFIG } from "@/lib/category-config";
 import { logWarn } from "@/lib/logger";
 import "../globals.css";
 
@@ -44,16 +45,27 @@ export default async function FrontendLayout({
   const adsenseClient = ADSENSE_CLIENT;
 
   let breakingItems: { text: string; link?: string }[] = [];
-  let categories: { name: string; slug: string }[] = [];
+  let categories: { name: string; slug: string }[] = ORDERED_CATEGORY_CONFIG.map((category) => ({
+    name: category.name,
+    slug: category.slug,
+  }));
   try {
     const [breakingNews, categoriesResult] = await Promise.all([getBreakingNews(), getAllCategories()]);
     breakingItems = ((breakingNews as any)?.items || [])
       .filter((item: any) => item.isActive !== false)
       .filter((item: any) => !item.expiresAt || new Date(item.expiresAt).getTime() > Date.now())
       .map((item: any) => ({ text: item.text, link: item.link }));
-    categories = categoriesResult.docs
+    const dbCategories = categoriesResult.docs
       .filter((category) => typeof category.slug === "string" && category.slug.length > 0)
       .map((category) => ({ name: category.name, slug: category.slug }));
+
+    if (dbCategories.length > 0) {
+      categories = ORDERED_CATEGORY_CONFIG.map((category) => {
+        const existing = dbCategories.find((item) => item.slug === category.slug);
+
+        return existing || { name: category.name, slug: category.slug };
+      });
+    }
   } catch (error) {
     logWarn("Failed to load breaking news headlines", {
       error: error instanceof Error ? error.message : String(error),
