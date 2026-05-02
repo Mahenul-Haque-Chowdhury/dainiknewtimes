@@ -48,7 +48,7 @@ export default function ZoneEditorLink() {
           </p>
         </div>
         <a
-          href={`/epaper/zone-editor/${id}`}
+          href={`/admin/zone-editor/${id}`}
           target="_blank"
           rel="noopener noreferrer"
           style={{
