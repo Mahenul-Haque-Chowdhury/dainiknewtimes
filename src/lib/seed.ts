@@ -1,21 +1,6 @@
 import { getPayload } from "payload";
+import { ORDERED_CATEGORY_CONFIG } from "@/lib/category-config";
 import config from "../payload.config";
-
-const categories = [
-  { name: "জাতীয়", slug: "national", displayOrder: 1, color: "#01284E" },
-  { name: "দেশজুড়ে", slug: "country", displayOrder: 2, color: "#01284E" },
-  { name: "আন্তর্জাতিক", slug: "international", displayOrder: 3, color: "#01284E" },
-  { name: "শিক্ষাঙ্গন", slug: "education", displayOrder: 4, color: "#01284E" },
-  { name: "রাজনীতি", slug: "politics", displayOrder: 5, color: "#d92028" },
-  { name: "অর্থ-বাণিজ্য", slug: "finance", displayOrder: 6, color: "#01284E" },
-  { name: "তথ্য-প্রযুক্তি", slug: "technology", displayOrder: 7, color: "#01284E" },
-  { name: "খেলা", slug: "sports", displayOrder: 8, color: "#0d6efd" },
-  { name: "বিনোদন", slug: "entertainment", displayOrder: 9, color: "#01284E" },
-  { name: "প্রবাস", slug: "diaspora", displayOrder: 10, color: "#01284E" },
-  { name: "লাইফস্টাইল", slug: "lifestyle", displayOrder: 11, color: "#01284E" },
-  { name: "সম্পাদকীয়", slug: "editorial", displayOrder: 12, color: "#01284E" },
-  { name: "ধর্ম", slug: "religion", displayOrder: 13, color: "#01284E" },
-];
 
 async function seed() {
   const payload = await getPayload({ config });
@@ -23,7 +8,7 @@ async function seed() {
 
   console.log("🌱 Seeding categories...");
 
-  for (const cat of categories) {
+  for (const cat of ORDERED_CATEGORY_CONFIG) {
     const existing = await payload.find({
       collection: "categories",
       where: { slug: { equals: cat.slug } },
@@ -37,7 +22,12 @@ async function seed() {
       });
       console.log(`  ✓ Created: ${cat.name} (${cat.slug})`);
     } else {
-      console.log(`  — Skipped: ${cat.name} (already exists)`);
+      await payload.update({
+        collection: "categories",
+        id: existing.docs[0].id,
+        data: cat,
+      });
+      console.log(`  ↺ Synced: ${cat.name} (${cat.slug})`);
     }
   }
 
@@ -60,18 +50,30 @@ async function seed() {
     console.log("  ✓ Created admin user: admin@dainiknewtimes.com");
   }
 
+  await payload.updateGlobal({
+    slug: "headlines",
+    data: {
+      items: [
+        { text: "সর্বশেষ সংবাদ: প্রধান শিরোনাম এখানে প্রদর্শিত হবে", link: "/", isActive: true },
+        { text: "আজকের গুরুত্বপূর্ণ খবর: দ্বিতীয় শিরোনাম", link: "/", isActive: true },
+        { text: "আরও আপডেট: সংবাদ প্রবাহ অব্যাহত", link: "/", isActive: true },
+      ],
+    },
+  });
+  console.log("  ✓ Set headline strip items");
+
   // Set up breaking news
   await payload.updateGlobal({
     slug: "breaking-news",
     data: {
-      headlines: [
-        { text: "সর্বশেষ সংবাদ: প্রধান শিরোনাম এখানে প্রদর্শিত হবে", link: "/", isActive: true },
-        { text: "আজকের গুরুত্বপূর্ণ খবর: দ্বিতীয় শিরোনাম", link: "/", isActive: true },
-        { text: "তৃতীয় শিরোনাম: ব্রেকিং নিউজ আপডেট", link: "/", isActive: true },
+      items: [
+        { text: "ব্রেকিং: গুরুত্বপূর্ণ আপডেট নিচের টিকারে দেখানো হবে", link: "/", isActive: true, durationMinutes: "60" },
+        { text: "ফলো-আপ: পরবর্তী ব্রেকিং আপডেট", link: "/", isActive: true, durationMinutes: "90" },
+        { text: "নিউজরুম অ্যালার্ট: জরুরি সর্বশেষ সংবাদ", link: "/", isActive: true, durationMinutes: "120" },
       ],
     },
   });
-  console.log("  ✓ Set breaking news headlines");
+  console.log("  ✓ Set breaking news ticker items");
 
   console.log("\n✅ Seeding complete!");
   process.exit(0);

@@ -4,6 +4,9 @@ import { isLoggedIn, mediaUpdateDeleteAccess } from "@/lib/access";
 
 export const Media: CollectionConfig = {
   slug: "media",
+  admin: {
+    group: "Assets",
+  },
   access: {
     read: () => true,
     create: isLoggedIn,

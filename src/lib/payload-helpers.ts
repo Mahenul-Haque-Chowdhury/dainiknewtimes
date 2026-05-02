@@ -1,6 +1,7 @@
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
 import type { Where } from "payload";
+import { ORDERED_CATEGORY_SLUGS, sortConfiguredCategories } from "@/lib/category-config";
 
 export interface SiteSettingsResult {
   siteName?: string;
@@ -186,11 +187,20 @@ export async function getPopularArticles(limit = 5) {
 
 export async function getAllCategories() {
   const payload = await getPayloadClient();
-  return payload.find({
+  const result = await payload.find({
     collection: "categories",
-    sort: "displayOrder",
+    where: {
+      slug: {
+        in: [...ORDERED_CATEGORY_SLUGS],
+      },
+    },
     limit: 50,
   });
+
+  return {
+    ...result,
+    docs: sortConfiguredCategories(result.docs),
+  };
 }
 
 export async function getHomepageCategoryTabs(limit = 4, articleLimit = 8) {
@@ -275,6 +285,11 @@ export async function getTodayEPaperOrLatest() {
 export async function getSiteSettings() {
   const payload = await getPayloadClient();
   return payload.findGlobal({ slug: "site-settings", depth: 2 }) as Promise<SiteSettingsResult>;
+}
+
+export async function getHeadlines() {
+  const payload = await getPayloadClient();
+  return payload.findGlobal({ slug: "headlines" });
 }
 
 export async function getBreakingNews() {

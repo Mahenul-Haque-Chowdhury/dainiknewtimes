@@ -95,10 +95,12 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     'site-settings': SiteSetting;
+    headlines: Headline;
     'breaking-news': BreakingNew;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    headlines: HeadlinesSelect<false> | HeadlinesSelect<true>;
     'breaking-news': BreakingNewsSelect<false> | BreakingNewsSelect<true>;
   };
   locale: null;
@@ -672,18 +674,50 @@ export interface SiteSetting {
   createdAt?: string | null;
 }
 /**
+ * Top headline strip content for homepage and content surfaces.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "headlines".
+ */
+export interface Headline {
+  id: number;
+  items?:
+    | {
+        text: string;
+        /**
+         * Optional link to the full article or landing page.
+         */
+        link?: string | null;
+        isActive?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Urgent ticker items shown in the fixed bottom breaking news bar.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "breaking-news".
  */
 export interface BreakingNew {
   id: number;
-  headlines?:
+  items?:
     | {
         text: string;
         /**
          * Optional: link to the full article
          */
         link?: string | null;
+        /**
+         * Select how long this breaking item should stay active after saving.
+         */
+        durationMinutes: '30' | '60' | '90' | '120' | '180' | '360';
+        /**
+         * Automatically generated from the timer when you save.
+         */
+        expiresAt?: string | null;
         isActive?: boolean | null;
         id?: string | null;
       }[]
@@ -729,14 +763,33 @@ export interface SiteSettingsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "breaking-news_select".
+ * via the `definition` "headlines_select".
  */
-export interface BreakingNewsSelect<T extends boolean = true> {
-  headlines?:
+export interface HeadlinesSelect<T extends boolean = true> {
+  items?:
     | T
     | {
         text?: T;
         link?: T;
+        isActive?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "breaking-news_select".
+ */
+export interface BreakingNewsSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        text?: T;
+        link?: T;
+        durationMinutes?: T;
+        expiresAt?: T;
         isActive?: T;
         id?: T;
       };

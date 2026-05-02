@@ -8,6 +8,7 @@ export const EPapers: CollectionConfig = {
   admin: {
     useAsTitle: "issueDate",
     defaultColumns: ["issueDate", "pageCount", "status"],
+    group: "Publishing",
   },
   access: {
     read: () => true,

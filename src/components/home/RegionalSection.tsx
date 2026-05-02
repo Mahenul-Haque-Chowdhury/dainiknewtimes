@@ -10,10 +10,12 @@ interface Article {
 }
 
 interface RegionalSectionProps {
+  title: string;
+  slug: string;
   articles: Article[];
 }
 
-export default function RegionalSection({ articles }: RegionalSectionProps) {
+export default function RegionalSection({ title, slug, articles }: RegionalSectionProps) {
   const mainStory = articles[0];
   const sideStories = articles.slice(1, 5);
 
@@ -23,11 +25,11 @@ export default function RegionalSection({ articles }: RegionalSectionProps) {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <span className="text-primary-red">☰</span> দেশজুড়ে
+            <span className="text-primary-red">☰</span> {title}
             <span className="flex-1 h-0.75 bg-linear-to-r from-red-500 via-blue-500 to-red-500 ml-2" />
           </h2>
           <Link
-            href="/country"
+            href={`/${slug}`}
             className="text-primary-red text-sm font-bold hover:underline shrink-0 ml-4"
           >
             আরও ›

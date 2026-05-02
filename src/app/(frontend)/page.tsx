@@ -16,7 +16,7 @@ import {
   getPublishedArticles,
   getPopularArticles,
   getArticlesByCategory,
-  getBreakingNews,
+  getHeadlines,
   getHomepageCategoryTabs,
 } from "@/lib/payload-helpers";
 import { getSiteUrl } from "@/lib/env";
@@ -34,36 +34,36 @@ export default async function HomePage() {
     featuredResult,
     latestResult,
     popularResult,
-    breakingNews,
+    headlinesResult,
     categoryTabs,
     sportsResult,
-    countryResult,
-    entertainmentResult,
-    diasporaResult,
-    editorialResult,
+    mymensinghResult,
+    cultureResult,
+    researchResult,
+    opinionResult,
   ] = await Promise.all([
     getFeaturedArticles(6),
     getPublishedArticles(10),
     getPopularArticles(5),
-    getBreakingNews(),
+    getHeadlines(),
     getHomepageCategoryTabs(4, 8),
     getArticlesByCategory("sports", 8),
-    getArticlesByCategory("country", 5),
-    getArticlesByCategory("entertainment", 5),
-    getArticlesByCategory("diaspora", 5),
-    getArticlesByCategory("editorial", 5),
+    getArticlesByCategory("mymensingh", 5),
+    getArticlesByCategory("culture", 5),
+    getArticlesByCategory("research-development", 5),
+    getArticlesByCategory("opinion", 5),
   ]);
 
   const featured = featuredResult.docs;
   const latest = latestResult.docs;
   const popular = popularResult.docs;
-  const headlines = (breakingNews as any)?.headlines || [];
+  const headlines = ((headlinesResult as any)?.items || []).filter((item: any) => item.isActive !== false);
 
   const sports = sportsResult?.articles?.docs || [];
-  const regional = countryResult?.articles?.docs || [];
-  const entertainment = entertainmentResult?.articles?.docs || [];
-  const diaspora = diasporaResult?.articles?.docs || [];
-  const editorial = editorialResult?.articles?.docs || [];
+  const regional = mymensinghResult?.articles?.docs || [];
+  const culture = cultureResult?.articles?.docs || [];
+  const research = researchResult?.articles?.docs || [];
+  const opinion = opinionResult?.articles?.docs || [];
 
   // Use featured articles as photo gallery (articles with images)
   const galleryImages = featured.filter((a: any) => a.featuredImage).slice(0, 6);
@@ -111,17 +111,17 @@ export default async function HomePage() {
       </div>
 
       {/* Sports Carousel — Blue background */}
-      <SportsCarousel articles={sports} />
+      <SportsCarousel title="খেলা" slug="sports" articles={sports} />
 
       {/* Regional Section */}
-      <RegionalSection articles={regional} />
+      <RegionalSection title="ময়মনসিংহ" slug="mymensingh" articles={regional} />
 
-      {/* Three Column Section: Entertainment | Diaspora | Editorial */}
+      {/* Three Column Section */}
       <ThreeColumnSection
         columns={[
-          { title: "বিনোদন", slug: "entertainment", articles: entertainment },
-          { title: "প্রবাস", slug: "diaspora", articles: diaspora },
-          { title: "সম্পাদকীয়", slug: "editorial", articles: editorial },
+          { title: "সংস্কৃতি", slug: "culture", articles: culture },
+          { title: "গবেষনা-উন্নয়ন", slug: "research-development", articles: research },
+          { title: "মতামত", slug: "opinion", articles: opinion },
         ]}
       />
 

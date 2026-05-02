@@ -12,10 +12,12 @@ interface Article {
 }
 
 interface SportsCarouselProps {
+  title: string;
+  slug: string;
   articles: Article[];
 }
 
-export default function SportsCarousel({ articles }: SportsCarouselProps) {
+export default function SportsCarousel({ title, slug, articles }: SportsCarouselProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [visibleCount, setVisibleCount] = useState(4);
@@ -51,7 +53,7 @@ export default function SportsCarousel({ articles }: SportsCarouselProps) {
     return (
       <section className="bg-section-blue py-8 mb-8">
         <div className="max-w-300 mx-auto px-4">
-          <SectionHeader />
+          <SectionHeader title={title} slug={slug} />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="bg-white rounded overflow-hidden shadow">
@@ -71,7 +73,7 @@ export default function SportsCarousel({ articles }: SportsCarouselProps) {
   return (
     <section className="bg-section-blue py-8 mb-8">
       <div className="max-w-300 mx-auto px-4">
-        <SectionHeader />
+        <SectionHeader title={title} slug={slug} />
 
         <div
           className="relative"
@@ -155,12 +157,17 @@ export default function SportsCarousel({ articles }: SportsCarouselProps) {
   );
 }
 
-function SectionHeader() {
+function SectionHeader({ title, slug }: { title: string; slug: string }) {
   return (
-    <h2 className="text-white text-xl font-bold mb-4 flex items-center gap-2">
-      <span>☰</span> খেলা
-      <span className="flex-1 h-0.75 bg-linear-to-r from-red-500 via-blue-500 to-red-500 ml-2" />
-    </h2>
+    <div className="mb-4 flex items-center justify-between gap-4">
+      <h2 className="text-white text-xl font-bold flex items-center gap-2">
+        <span>☰</span> {title}
+        <span className="flex-1 h-0.75 bg-linear-to-r from-red-500 via-blue-500 to-red-500 ml-2" />
+      </h2>
+      <Link href={`/${slug}`} className="shrink-0 text-sm font-semibold text-white/85 hover:text-white">
+        আরও ›
+      </Link>
+    </div>
   );
 }
 

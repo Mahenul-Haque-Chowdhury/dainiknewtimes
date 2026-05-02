@@ -7,6 +7,7 @@ export const Users: CollectionConfig = {
   auth: true,
   admin: {
     useAsTitle: "name",
+    group: "Administration",
   },
   access: {
     read: selfOrAdminAccess,

@@ -19,6 +19,7 @@ import { Articles } from "./collections/Articles";
 import { EPapers } from "./collections/EPapers";
 import { SiteSettings } from "./globals/SiteSettings";
 import { BreakingNews } from "./globals/BreakingNews";
+import { Headlines } from "./globals/Headlines";
 import { serverEnv } from "./lib/env";
 
 const filename = fileURLToPath(import.meta.url);
@@ -32,7 +33,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Categories, Articles, EPapers],
-  globals: [SiteSettings, BreakingNews],
+  globals: [SiteSettings, Headlines, BreakingNews],
   editor: lexicalEditor({
     features: ({ defaultFeatures }) => [
       ...defaultFeatures.filter((feature) => feature.key !== "toolbarInline"),

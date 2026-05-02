@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 
+import { ORDERED_CATEGORY_SLUGS } from "@/lib/category-config";
 import { canCreateArticle, canUpdateDeleteArticle } from "@/lib/access";
 import { logInfo } from "@/lib/logger";
 import { slugify } from "@/lib/slug";
@@ -9,6 +10,7 @@ export const Articles: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "category", "status", "publishDate"],
+    group: "Publishing",
   },
   access: {
     read: () => true,
@@ -76,6 +78,11 @@ export const Articles: CollectionConfig = {
       relationTo: "categories",
       required: true,
       label: "Category (ক্যাটাগরি)",
+      filterOptions: {
+        slug: {
+          in: [...ORDERED_CATEGORY_SLUGS],
+        },
+      },
     },
     {
       name: "reporter",

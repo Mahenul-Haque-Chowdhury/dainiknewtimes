@@ -43,13 +43,14 @@ export default async function FrontendLayout({
 }) {
   const adsenseClient = ADSENSE_CLIENT;
 
-  let headlines: { text: string; link?: string }[] = [];
+  let breakingItems: { text: string; link?: string }[] = [];
   let categories: { name: string; slug: string }[] = [];
   try {
     const [breakingNews, categoriesResult] = await Promise.all([getBreakingNews(), getAllCategories()]);
-    headlines = ((breakingNews as any)?.headlines || [])
-      .filter((h: any) => h.isActive !== false)
-      .map((h: any) => ({ text: h.text, link: h.link }));
+    breakingItems = ((breakingNews as any)?.items || [])
+      .filter((item: any) => item.isActive !== false)
+      .filter((item: any) => !item.expiresAt || new Date(item.expiresAt).getTime() > Date.now())
+      .map((item: any) => ({ text: item.text, link: item.link }));
     categories = categoriesResult.docs
       .filter((category) => typeof category.slug === "string" && category.slug.length > 0)
       .map((category) => ({ name: category.name, slug: category.slug }));
@@ -80,7 +81,7 @@ export default async function FrontendLayout({
         <Navbar categories={categories} />
         <main className="pb-8 pt-2 lg:pt-3">{children}</main>
         <Footer />
-        <BottomTicker headlines={headlines} />
+        <BottomTicker headlines={breakingItems} />
         <ScrollToTop />
       </body>
     </html>
