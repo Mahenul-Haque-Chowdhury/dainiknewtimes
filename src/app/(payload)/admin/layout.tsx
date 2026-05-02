@@ -5,6 +5,7 @@ import React from "react";
 import { importMap } from "./importMap.js";
 import { serverFunctionHandler } from "./serverFunctions";
 
+import "../../globals.css";
 import "./[[...segments]]/layout.css";
 
 type Args = {
