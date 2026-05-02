@@ -11,6 +11,25 @@ export const ORDERED_CATEGORY_CONFIG = [
 ] as const;
 
 export const ORDERED_CATEGORY_SLUGS = ORDERED_CATEGORY_CONFIG.map((category) => category.slug);
+export const ORDERED_CATEGORY_NAMES = ORDERED_CATEGORY_CONFIG.map((category) => category.name);
+
+type ConfiguredCategory = (typeof ORDERED_CATEGORY_CONFIG)[number];
+
+const CONFIGURED_CATEGORY_BY_SLUG = new Map<string, ConfiguredCategory>(
+  ORDERED_CATEGORY_CONFIG.map((category) => [category.slug, category]),
+);
+
+const CONFIGURED_CATEGORY_BY_NAME = new Map<string, ConfiguredCategory>(
+  ORDERED_CATEGORY_CONFIG.map((category) => [category.name, category]),
+);
+
+export function getConfiguredCategoryBySlug(slug: string) {
+  return CONFIGURED_CATEGORY_BY_SLUG.get(slug);
+}
+
+export function getConfiguredCategoryByName(name: string) {
+  return CONFIGURED_CATEGORY_BY_NAME.get(name);
+}
 
 export function sortConfiguredCategories<T extends { slug: string }>(categories: T[]) {
   const orderMap = new Map<string, number>(ORDERED_CATEGORY_SLUGS.map((slug, index) => [slug, index]));
