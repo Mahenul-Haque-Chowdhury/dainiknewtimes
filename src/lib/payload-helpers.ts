@@ -2,6 +2,7 @@ import configPromise from "@payload-config";
 import { getPayload } from "payload";
 import type { Where } from "payload";
 import { ORDERED_CATEGORY_SLUGS, sortConfiguredCategories } from "@/lib/category-config";
+import { logWarn } from "@/lib/logger";
 
 export interface SiteSettingsResult {
   siteName?: string;
@@ -287,14 +288,56 @@ export async function getSiteSettings() {
   return payload.findGlobal({ slug: "site-settings", depth: 2 }) as Promise<SiteSettingsResult>;
 }
 
+function isMissingRelationError(error: unknown) {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  const nestedCause = error.cause as { code?: string; message?: string } | undefined;
+
+  return (
+    nestedCause?.code === "42P01" ||
+    error.message.includes("relation ") ||
+    nestedCause?.message?.includes("relation ") === true
+  );
+}
+
 export async function getHeadlines() {
-  const payload = await getPayloadClient();
-  return payload.findGlobal({ slug: "headlines" });
+  try {
+    const payload = await getPayloadClient();
+    return await payload.findGlobal({ slug: "headlines" });
+  } catch (error) {
+    if (isMissingRelationError(error)) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+
+      logWarn("Headlines table not available yet", {
+        error: errorMessage,
+      });
+
+      return null;
+    }
+
+    throw error;
+  }
 }
 
 export async function getBreakingNews() {
-  const payload = await getPayloadClient();
-  return payload.findGlobal({ slug: "breaking-news" });
+  try {
+    const payload = await getPayloadClient();
+    return await payload.findGlobal({ slug: "breaking-news" });
+  } catch (error) {
+    if (isMissingRelationError(error)) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+
+      logWarn("Breaking news table not available yet", {
+        error: errorMessage,
+      });
+
+      return null;
+    }
+
+    throw error;
+  }
 }
 
 export async function incrementViewCount(articleId: number | string) {
